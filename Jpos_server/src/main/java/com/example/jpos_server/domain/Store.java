@@ -22,10 +22,10 @@ public class Store {
 
     @Setter
     @Column(nullable = false)
-    private Point storeLoc; // 가게 좌표
-
     private Double latitude; //가게 좌표 이용을 위한 위도
 
+    @Setter
+    @Column(nullable = false)
     private Double longitude; // 가게 좌표 이용을 위한 경도
 
     @Setter
