@@ -29,6 +29,9 @@ dependencies {
 	//point형 사용을 위해
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.9.Final'
 
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
