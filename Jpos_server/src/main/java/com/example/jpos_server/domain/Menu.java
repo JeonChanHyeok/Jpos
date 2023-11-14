@@ -26,6 +26,7 @@ public class Menu {
     @Setter
     @Column(nullable = false)
     private int price; // 가격
+    
 
     public Menu() {
     }
