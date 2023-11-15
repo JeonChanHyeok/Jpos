@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "onsenui": "^2.12.8",
+    "vue-onsenui": "^2.7.2"
+  }
+}
