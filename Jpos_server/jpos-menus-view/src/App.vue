@@ -60,27 +60,70 @@ export default {
                     index: 3,
                     weight: 'normal',
                 },
-                {
-                    index: 4,
-                    weight: 'normal',
-                },
-                {
-                    index: 5,
-                    weight: 'normal',
-                },
-                {
-                    index: 6,
-                    weight: 'normal',
-                },
-                {
-                    index: 7,
-                    weight: 'normal',
-                },
             ],
             menus: [
                 {
-                    menu_id: 0,
-                    menu
+                    menuId: 0,
+                    menuName: 'menu_A',
+                    storeId: 0,
+                    categoryName: '한식',
+                    price: 1000,
+                },
+                {
+                    menuId: 1,
+                    menuName: 'menu_B',
+                    storeId: 0,
+                    categoryId: '한식',
+                    price: 2000,
+                },
+                {
+                    menuId: 2,
+                    menuName: 'menu_C',
+                    storeId: 0,
+                    categoryId: '한식',
+                    price: 3000,
+                },
+                {
+                    menuId: 3,
+                    menuName: 'menu_D',
+                    storeId: 0,
+                    categoryId: '일식',
+                    price: 4000,
+                },
+                {
+                    menuId: 4,
+                    menuName: 'menu_E',
+                    storeId: 0,
+                    categoryId: '일식',
+                    price: 5000,
+                },
+                {
+                    menuId: 5,
+                    menuName: 'menu_F',
+                    storeId: 0,
+                    categoryId: '일식',
+                    price: 6000,
+                },
+                {
+                    menuId: 6,
+                    menuName: 'menu_G',
+                    storeId: 0,
+                    categoryId: '중식',
+                    price: 7000,
+                },
+                {
+                    menuId: 7,
+                    menuName: 'menu_H',
+                    storeId: 0,
+                    categoryId: '중식',
+                    price: 8000,
+                },
+                {
+                    menuId: 8,
+                    menuName: 'menu_I',
+                    storeId: 0,
+                    categoryId: '중식',
+                    price: 9000,
                 },
             ]
         }

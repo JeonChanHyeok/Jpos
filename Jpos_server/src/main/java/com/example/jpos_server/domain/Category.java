@@ -10,35 +10,26 @@ import java.util.Objects;
 @Getter
 @ToString
 @Entity
-public class Menu {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
     @Column(nullable = false)
-    private String menuName; // 메뉴 이름
+    private String categoryName; // 카테고리 이름
 
     @Setter
     @ManyToOne(optional = false)
     private Store store; // 가게
 
-    @Setter
-    @ManyToOne(optional = false)
-    private Category category; // 카테고리
-
-    @Setter
-    @Column(nullable = false)
-    private int price; // 가격
-    
-
-    public Menu() {
+    public Category() {
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Menu that)) return false;
+        if (!(obj instanceof Category that)) return false;
         return id != null && id.equals(that.id);
     }
 
