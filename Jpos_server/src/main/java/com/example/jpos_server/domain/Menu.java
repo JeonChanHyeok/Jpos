@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.locationtech.jts.geom.Point;
 
 import java.util.Objects;
 
@@ -25,8 +24,13 @@ public class Menu {
     private Store store; // 가게
 
     @Setter
+    @ManyToOne(optional = false)
+    private Category category; // 카테고리
+
+    @Setter
     @Column(nullable = false)
     private int price; // 가격
+    
 
     public Menu() {
     }

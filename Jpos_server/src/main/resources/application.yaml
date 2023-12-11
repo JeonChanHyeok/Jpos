@@ -9,6 +9,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://localhost:3306/jpos
     username: wjscksgurdl
@@ -22,3 +25,6 @@ spring:
       hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 100
   sql.init.mode: always
+  data.rest:
+    base-path: /api
+    detection-strategy: annotated
