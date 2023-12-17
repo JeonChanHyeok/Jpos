@@ -1,22 +1,32 @@
-import './assets/main.css'
+/*
+=========================================================
+* Vite Soft UI Dashboard - v1.0.0
+=========================================================
+* Product Page: https://creative-tim.com/product/vite-soft-ui-dashboard
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+Coded by www.creative-tim.com
+* Licensed under MIT (https://github.com/creativetimofficial/vite-soft-ui-dashboard/blob/556f77210e261adc3ec12197dab1471a1295afd8/LICENSE.md)
+=========================================================
 
-
-import router from './router'
-import axios from "axios";
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/ 
 
 import { createApp } from 'vue'
-import { createPinia } from 'pinia';
-
 import App from './App.vue'
+import store from "./store";
+import router from "./router";
+import "./assets/css/nucleo-icons.css";
+import "./assets/css/nucleo-svg.css";
+import SoftUIDashboard from "./soft-ui-dashboard";
+import axios from "axios";
 
-axios.defaults.baseURL = "http://61.101.89.253:8080";
-
-const pinia = createPinia();
 const app = createApp(App)
-
+axios.defaults.baseURL = "http://61.101.89.253:8080";
 app.config.globalProperties.axios = axios;
+app.config.globalProperties.$store = store;
 
-app.use(pinia);
-app.use(router);
 
-app.mount('#app')
+app.use(store)
+    .use(router)
+    .use(SoftUIDashboard)
+    .mount('#app')

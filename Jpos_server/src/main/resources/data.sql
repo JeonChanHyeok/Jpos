@@ -1,34 +1,28 @@
-insert into user (user_id, user_pw, user_name) values ('Athena', 'Mumbray', 'Athena Mumbray');
-insert into user (user_id, user_pw, user_name) values ('Bette-ann', 'Finders', 'Bette-ann Finders');
-insert into user (user_id, user_pw, user_name) values ('Wilhelm', 'Haugen', 'Wilhelm Haugen');
-insert into user (user_id, user_pw, user_name) values ('Roscoe', 'Holdall', 'Roscoe Holdall');
-insert into user (user_id, user_pw, user_name) values ('Zola', 'Shallcroff', 'Zola Shallcroff');
-insert into user (user_id, user_pw, user_name) values ('Ann', 'Juleff', 'Ann Juleff');
-insert into user (user_id, user_pw, user_name) values ('Barby', 'Perrigo', 'Barby Perrigo');
-insert into user (user_id, user_pw, user_name) values ('Garold', 'Nelson', 'Garold Nelson');
-insert into user (user_id, user_pw, user_name) values ('Othella', 'Jados', 'Othella Jados');
-insert into user (user_id, user_pw, user_name) values ('Tracy', 'Evenden', 'Tracy Evenden');
 
-insert into store (store_name, latitude, longitude, user_id) values ('Edgepulse', 40.5235837, 19.8075358, 6);
-insert into store (store_name, latitude, longitude, user_id) values ('Mydo', -27.0052075, -51.154395, 3);
-insert into store (store_name, latitude, longitude, user_id) values ('Shufflebeat', 12.2328311, 107.6216789, 3);
-insert into store (store_name, latitude, longitude, user_id) values ('Skaboo', 43.4676913, 19.8125507, 1);
-insert into store (store_name, latitude, longitude, user_id) values ('Abata', 40.211601, 46.8237055, 10);
-insert into store (store_name, latitude, longitude, user_id) values ('Jabbersphere', 14.5403397, 121.0268687, 8);
-insert into store (store_name, latitude, longitude, user_id) values ('Photobug', -7.0543824, 108.7690065, 5);
-insert into store (store_name, latitude, longitude, user_id) values ('Dablist', 55.4763949, 13.5019331, 10);
-insert into store (store_name, latitude, longitude, user_id) values ('Podcat', 34.8291055, 36.2264681, 1);
-insert into store (store_name, latitude, longitude, user_id) values ('Centidel', 38.8424265, -9.1901989, 9);
-insert into store (store_name, latitude, longitude, user_id) values ('Zooxo', 49.05798, -122.25257, 10);
-insert into store (store_name, latitude, longitude, user_id) values ('Thoughtbeat', 11.9210864, -86.1230153, 4);
-insert into store (store_name, latitude, longitude, user_id) values ('InnoZ', 51.349366, 9.7730968, 5);
-insert into store (store_name, latitude, longitude, user_id) values ('Dabtype', -29.5904737, -51.3738524, 2);
-insert into store (store_name, latitude, longitude, user_id) values ('Jabberbean', 15.3083007, 47.9787391, 9);
-insert into store (store_name, latitude, longitude, user_id) values ('Tagfeed', 59.927607, 32.296821, 1);
-insert into store (store_name, latitude, longitude, user_id) values ('Yabox', 26.8429645, 107.2902839, 5);
-insert into store (store_name, latitude, longitude, user_id) values ('Realcube', 38.64501, 65.68952, 1);
-insert into store (store_name, latitude, longitude, user_id) values ('Plajo', 28.5107872, -81.4828198, 9);
-insert into store (store_name, latitude, longitude, user_id) values ('Katz', -8.6450837, 116.8085683, 8);
+select * from store;
+
+select * from pos_order;
+
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Edgepulse', 40.5235837, 19.8075358, 'aa', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Mydo', -27.0052075, -51.154395, 'bb', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Shufflebeat', 12.2328311, 107.6216789, 'cc', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Skaboo', 43.4676913, 19.8125507, 'dd', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Abata', 40.211601, 46.8237055, 'ee', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Jabbersphere', 14.5403397, 121.0268687, 'ff', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Photobug', -7.0543824, 108.7690065, 'gg', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Dablist', 55.4763949, 13.5019331, 'hh', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Podcat', 34.8291055, 36.2264681, 'ii', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Centidel', 38.8424265, -9.1901989, 'jj', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Zooxo', 49.05798, -122.25257, 'kk', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Thoughtbeat', 11.9210864, -86.1230153, 'll', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('InnoZ', 51.349366, 9.7730968, 'mm', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Dabtype', -29.5904737, -51.3738524, 'nn', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Jabberbean', 15.3083007, 47.9787391, 'oo', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Tagfeed', 59.927607, 32.296821, 'pp', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Yabox', 26.8429645, 107.2902839, 'qq', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Realcube', 38.64501, 65.68952, 'rr', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Plajo', 28.5107872, -81.4828198, 'ss', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
+insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Katz', -8.6450837, 116.8085683, 'tt', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
 
 insert into category (category_name, store_id) values ('메인', 1);
 insert into category (category_name, store_id) values ('사이드', 1);
@@ -372,6 +366,7 @@ insert into seat (seat_name, store_id) values (97, 14);
 insert into seat (seat_name, store_id) values (98, 19);
 insert into seat (seat_name, store_id) values (99, 17);
 insert into seat (seat_name, store_id) values (100, 6);
+
 
 
 

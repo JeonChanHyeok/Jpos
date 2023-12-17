@@ -28,8 +28,20 @@ public class Store {
     private Double longitude; // 가게 좌표 이용을 위한 경도
 
     @Setter
-    @ManyToOne(optional = false)
-    private User user; // 가게 점주
+    @Column(nullable = false)
+    private String storeLoginId;
+
+    @Setter
+    @Column(nullable = false)
+    private String storeLoginPw;
+
+    public Store(String storeName, Double latitude, Double longitude, String storeLoginId, String storeLoginPw) {
+        this.storeName = storeName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.storeLoginId = storeLoginId;
+        this.storeLoginPw = storeLoginPw;
+    }
 
     public Store() {
     }
