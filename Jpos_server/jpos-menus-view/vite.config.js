@@ -19,7 +19,10 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      "/": "http://61.101.89.253:8080",
+      "/": {
+        target: "http://61.101.89.253:8080",
+        ws: true,
+      },
     },
   },
 })
