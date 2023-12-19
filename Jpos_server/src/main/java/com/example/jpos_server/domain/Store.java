@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class Store {
     @Setter
     @Column(nullable = false)
     private String storeLoginPw;
+
 
     public Store(String storeName, Double latitude, Double longitude, String storeLoginId, String storeLoginPw) {
         this.storeName = storeName;

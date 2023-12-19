@@ -31,7 +31,8 @@ export default {
         return {
             seats: [],
             posOrders: [],
-            menus: []
+            menus: [],
+            seatIndex: "",
         }
     },
     methods: {

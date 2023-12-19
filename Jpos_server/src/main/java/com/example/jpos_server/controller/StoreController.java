@@ -2,7 +2,7 @@ package com.example.jpos_server.controller;
 
 
 import com.example.jpos_server.dto.StoreDto;
-import com.example.jpos_server.dto.resp.QrResponse;
+import com.example.jpos_server.domain.response.QrResponse;
 import com.example.jpos_server.repository.StoreRepository;
 import com.example.jpos_server.service.SeatService;
 import com.example.jpos_server.service.StoreService;

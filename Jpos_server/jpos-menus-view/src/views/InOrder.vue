@@ -93,7 +93,7 @@
             <div class="row mt-1">
                 <div class="col-8">
                 </div>
-                <div class="col-4 ali">
+                <div class="col-4 align-content-end">
                     <vsud-button class="m-1">주문하기</vsud-button>
                     <vsud-button class="m-1">결제하기</vsud-button>
                     <vsud-button class="m-1">닫기</vsud-button>
@@ -118,13 +118,6 @@ export default {
     name: "InOrder",
     components: {
         VsudButton,
-        NavPill,
-        MasterCard,
-        DefaultInfoCard,
-        PaymentCard,
-        InvoiceCard,
-        BillingCard,
-        TransactionCard,
     },
     props: {
         seatId: {

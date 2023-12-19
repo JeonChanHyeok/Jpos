@@ -1,8 +1,3 @@
-
-select * from store;
-
-select * from pos_order;
-
 insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Edgepulse', 40.5235837, 19.8075358, 'aa', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
 insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Mydo', -27.0052075, -51.154395, 'bb', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');
 insert into store (store_name, latitude, longitude, store_login_id, store_login_pw) values ('Shufflebeat', 12.2328311, 107.6216789, 'cc', '$2a$10$eQxwZAhVtJa2bGjJRbLYyOk2cUTEW.6Xfg7ziQsYoRLlE8BcOfEbS');

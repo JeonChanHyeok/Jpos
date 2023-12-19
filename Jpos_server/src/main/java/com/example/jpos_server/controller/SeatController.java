@@ -1,7 +1,8 @@
 package com.example.jpos_server.controller;
 
-import com.example.jpos_server.dto.resp.MenuAndOrderResponse;
-import com.example.jpos_server.dto.resp.SeatResponse;
+import com.example.jpos_server.domain.request.AddSeatRequest;
+import com.example.jpos_server.domain.response.MenuAndOrderResponse;
+import com.example.jpos_server.domain.response.SeatResponse;
 import com.example.jpos_server.repository.StoreRepository;
 import com.example.jpos_server.service.MenuService;
 import com.example.jpos_server.service.PosOrderService;
@@ -26,7 +27,7 @@ public class SeatController {
 
 
     @GetMapping("/{storeLoginId}")
-    public String loadSeats(@PathVariable String storeLoginId) throws JsonProcessingException {
+    public String loadSeatsAndOrderAndMenus(@PathVariable String storeLoginId) throws JsonProcessingException {
         SeatResponse seatResponse = new SeatResponse();
 
         seatResponse.setSeatDtoList(seatService.searchSeats(storeLoginId));
@@ -47,5 +48,30 @@ public class SeatController {
 
 
         return objectMapper.writeValueAsString(menuAndOrderResponse);
+    }
+
+    @GetMapping("/setting/{storeLoginId}")
+    public String loadSeats(@PathVariable String storeLoginId) throws JsonProcessingException{
+        SeatResponse seatResponse = new SeatResponse();
+
+        seatResponse.setSeatDtoList(seatService.searchSeats(storeLoginId));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.writeValueAsString(seatResponse);
+    }
+
+    @DeleteMapping("/setting/delete/{seatId}")
+    public String deleteSeat(@PathVariable Long seatId){
+        seatService.deleteSeat(seatId);
+        return "삭제 완료";
+    }
+
+    @PostMapping("/setting/add")
+    public String addSeat(AddSeatRequest addSeatRequest){
+        log.info(addSeatRequest.getStoreLoginId());
+        log.info(addSeatRequest.getSeatName());
+        seatService.addSeat(addSeatRequest.getStoreLoginId(), addSeatRequest.getSeatName());
+        return "추가 완료";
     }
 }

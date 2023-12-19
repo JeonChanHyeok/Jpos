@@ -1,30 +1,58 @@
 <template>
     <header>
-        <h1>가게명: {{ this.storeName }}
-            <vsud-button @click="orderModalOpen()">주문</vsud-button>
-            <br>좌석: {{ this.seatName }}
-        </h1>
+        <div class="row">
+            <div class="col-9">
+                <h1 class="text-truncate">가게명: {{ this.storeName }}</h1>
+            </div>
+            <div class="col-3">
+                <vsud-button @click="orderModalOpen()">주문</vsud-button>
+            </div>
+        </div>
+        <h1>좌석: {{ this.seatName }}</h1>
     </header>
 
-    <div class="modal" v-if="this.orderModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">현재 주문</h5>
-            </div>
-            <div class="modal-body">
-                <p v-if="this.posOrder.state === 0">현재 주문 내용이 없습니다.</p>
-                <p v-else-if="this.posOrder.state === 1" v-html="this.orderContentName"></p>
-            </div>
-            <div class="modal-footer">
-                총 금액: {{this.posOrder.posOrderPrice}} 원
-                <vsud-button @click="postOrder()">주문하기</vsud-button>
-                <vsud-button @click="orderModalOpen()">닫기</vsud-button>
+    <div class="modal-wrap" v-show="this.orderModal" @click="orderModalOpen()">
+        <div class="modal-mobile" @click.stop="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">현재 주문</h5>
+                </div>
+                <div class="modal-body">
+                    <p v-if="this.posOrder.state === 0">현재 주문 내용이 없습니다.</p>
+                    <p v-else-if="this.posOrder.state === 1" v-html="this.orderContentName"></p>
+                </div>
+                <div class="modal-footer">
+                    총 금액: {{ this.posOrder.posOrderPrice }} 원
+                    <vsud-button @click="postOrder()">주문하기</vsud-button>
+                    <vsud-button @click="orderModalOpen()">닫기</vsud-button>
+                </div>
             </div>
         </div>
     </div>
+
+<!--원래 모달창으로 품목 추가하려 했는데 모바일 환경에서 버튼이 계속 모달창 위로 취소-->
+<!--    <div class="modal-wrap" v-for="(item) in menus.filter((i) => this.menus.at(i.index).modal)"-->
+<!--         @click="menuCountModalOpen(item.index)">-->
+<!--        <div class="modal-mobile" @click.stop="">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5 class="modal-title">{{ item.menuName }}</h5>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    현재 {{ item.count }}개-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <vsud-button @click="addOrder(item.index)">+1</vsud-button>-->
+<!--                    <vsud-button @click="minusOrder(item.index)">-1</vsud-button>-->
+<!--                    <vsud-button @click="saveOrder(item.index)">주문저장</vsud-button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
   <!-- 카테고리 바 -->
     <swiper
-            :modules="modules"
             :slidesPerView="5"
             slideToClickedSlide="true"
             class="swiper"
@@ -42,40 +70,45 @@
     </swiper>
   <!-- 카테고리에 맞는 메뉴들 table로 표시 -->
     <div style="padding: 0">
-        <h2 v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories" :key="i">
-            {{ category.categoryName }}<br>
-            <table>
-                <thead>
-                <th v-for="item in menuTableHeads">{{ item }}</th>
-                </thead>
-                <tbody>
-                <tr v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
-                    <td>{{ item.menuName }}</td>
-                    <td>{{ item.price }}</td>
-                    <td><vsud-button @click="menuCountModalOpen(item.index)">주문</vsud-button></td>
-                    <div class="modal" v-if="this.menus.at(item.index).modal">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">{{item.menuName}}</h5>
-                            </div>
-                            <div class="modal-body">
-                                {{item.count}}개
-                            </div>
-                            <div class="modal-footer">
-                                <vsud-button @click="addOrder(item.index)">주문추가</vsud-button>
-                                <vsud-button @click="menuCountModalOpen(item.index)">닫기</vsud-button>
-                            </div>
-                        </div>
-                    </div>
-                </tr>
-                </tbody>
-            </table>
-        </h2>
+        <div class="row m-0 p-0" v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories" :key="i">
+            <h2>{{ category.categoryName }}</h2>
+            <div class="row m-0 p-0 border-top border-3">
+                <div class="col-6 m-0 p-0 border text-center"><h5>이름</h5></div>
+                <div class="col-3 m-0 p-0 border text-center"><h5>가격</h5></div>
+                <div class="col-3 m-0 p-0 border text-center"><h5>수량</h5></div>
+            </div>
+            <div class="row m-0 p-0 border-top border-3" v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
+                <div class="row m-0 p-0">
+                    <div class="col-6 m-0 p-0 border text-center"><h5>{{ item.menuName }}</h5></div>
+                    <div class="col-3 m-0 p-0 border text-center"><h5>{{ item.price }}</h5></div>
+                    <div class="col-3 m-0 p-0 border text-center"><h5>{{ item.count }}</h5></div>
+                </div>
+                <div class="row m-0 p-0 border-bottom border-3">
+                    <div class="col-6 m-0 p-1 text-center"><vsud-button @click="minusOrder(item.index)" style="width: 100%">-1</vsud-button></div>
+                    <div class="col-6 m-0 p-1 text-center"><vsud-button @click="addOrder(item.index)" style="width: 100%">+1</vsud-button></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--        <h2 v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories" :key="i">-->
+        <!--            {{ category.categoryName }}<br>-->
+        <!--            <table>-->
+        <!--                <thead>-->
+        <!--                <th v-for="item in menuTableHeads">{{ item }}</th>-->
+        <!--                </thead>-->
+        <!--                <tbody>-->
+        <!--                <tr v-for="(item) in menus.filter((c) => c.categoryId === category.id)">-->
+        <!--                    <td>{{ item.menuName }}</td>-->
+        <!--                    <td>{{ item.price }}</td>-->
+        <!--                    <td>-->
+        <!--                        <vsud-button @click="menuCountModalOpen(item.index)">주문</vsud-button>-->
+        <!--                    </td>-->
+        <!--                </tr>-->
+        <!--                </tbody>-->
+        <!--            </table>-->
+        <!--        </h2>-->
     </div>
-
-
-
-
 </template>
 
 <script>
@@ -103,8 +136,7 @@ export default {
             menuTableHeads: ["이름", "가격", "수량"], // 테이블 헤더
             categories: [], // 카테고리들
             menus: [], // 메뉴들
-            posOrder: {
-            },
+            posOrder: {},
             orderModal: false,
             orderContentName: "",
         }
@@ -135,19 +167,19 @@ export default {
                     this.menus.at(i).modal = false;
                 }
                 this.posOrder = JSON.parse(JSON.stringify(res.data.posOrderDto));
-                if(this.posOrder.id !== 0){
-                    for(i= 0 ; i < (this.posOrder.posOrderContent||'').split("/").length ; i++){
+                if (this.posOrder.id !== 0) {
+                    for (i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
                         for (var j = 0; j < this.menus.length; j++) {
-                            if(((this.posOrder.posOrderContent||'').split("/")[i]||'').split(",")[0] === "" + this.menus.at(j).id){
-                                this.menus.at(j).count = Number(((this.posOrder.posOrderContent||'').split("/")[i]||'').split(",")[1]);
+                            if (((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[0] === "" + this.menus.at(j).id) {
+                                this.menus.at(j).count = Number(((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[1]);
                             }
                         }
                     }
-                    for(var i=0; i < this.menus.length ; i++){
-                        if(this.menus.at(i).count === 0){
+                    for (var i = 0; i < this.menus.length; i++) {
+                        if (this.menus.at(i).count === 0) {
                             continue;
-                        }else{
-                            this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price*this.menus.at(i).count + "원<br/>";
+                        } else {
+                            this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
                         }
                     }
                 }
@@ -155,15 +187,15 @@ export default {
             });
         },
         postOrder() {
-            if(this.orderContentName === ""){
+            if (this.orderContentName === "") {
                 alert("주문을 추가해 주세요.")
                 this.orderModalOpen()
-            }else{
+            } else {
                 this.posOrder.posOrderContent = "";
-                for(var i=0; i < this.menus.length ; i++){
-                    if(this.menus.at(i).count === 0){
+                for (var i = 0; i < this.menus.length; i++) {
+                    if (this.menus.at(i).count === 0) {
                         continue;
-                    }else{
+                    } else {
                         this.posOrder.posOrderContent += this.menus.at(i).id + "," + this.menus.at(i).count + "/";
                     }
                 }
@@ -183,35 +215,54 @@ export default {
                 this.orderModalOpen();
             }
         },
-        addOrder(n){
-            this.posOrder.state = 1;
+        addOrder(n) {
             this.posOrder.posOrderPrice += this.menus.at(n).price;
             this.menus.at(n).count += 1;
+        },
+        minusOrder(n) {
+            if (this.menus.at(n).count === 0) {
+                alert("주문된 내용이 없습니다.")
+                return;
+            } else {
+                this.posOrder.posOrderPrice -= this.menus.at(n).price;
+                this.menus.at(n).count -= 1;
+            }
+        },
+        // saveOrder() {
+        //     this.orderContentName = ""
+        //     for (var i = 0; i < this.menus.length; i++) {
+        //         if (this.menus.at(i).count === 0) {
+        //             continue;
+        //         } else {
+        //             this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
+        //         }
+        //     }
+        //     if (this.orderContentName === "") {
+        //         this.posOrder.state = 0;
+        //     } else {
+        //         this.posOrder.state = 1;
+        //     }
+        // },
+        orderModalOpen() {
             this.orderContentName = ""
-            for(var i=0; i < this.menus.length ; i++){
-                if(this.menus.at(i).count === 0){
+            for (var i = 0; i < this.menus.length; i++) {
+                if (this.menus.at(i).count === 0) {
                     continue;
-                }else{
-                    this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price*this.menus.at(i).count + "원<br/>";
+                } else {
+                    this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
                 }
             }
-            for(var i=0; i < this.menus.length ; i++){
-                if(i === n) continue;
-                this.menus.at(i).modal = false;
+            if (this.orderContentName === "") {
+                this.posOrder.state = 0;
+            } else {
+                this.posOrder.state = 1;
             }
-            this.menus.at(n).modal = !this.menus.at(n).modal;
-
-        },
-        orderModalOpen() {
             this.orderModal = !this.orderModal;
         },
-        menuCountModalOpen(n){
-            for(var i=0; i < this.menus.length ; i++){
-                if(i === n) continue;
-                this.menus.at(i).modal = false;
-            }
-            this.menus.at(n).modal = !this.menus.at(n).modal;
-        },
+        // menuCountModalOpen(n) {
+        //     this.menus.at(n).modal = !this.menus.at(n).modal;
+        //     return;
+        // },
         // 카테고리 바 클릭 시 해당 카테고리 위치로 이동 및 bold체 변경 ( 나머지 카테고리 bold 해제 ) .
         clickSlide(n) {
             for (let i = 0; i < this.categories.length; i++) {
@@ -257,6 +308,9 @@ export default {
 </script>
 
 <style>
+html{
+    margin-right: 0;
+}
 table {
     width: 100vw;
     text-align: left;
@@ -286,29 +340,12 @@ table tr:nth-of-type(even) {
     top: 0;
 }
 
-.swiper-slide {
-    text-align: center;
-    font-size: 18px;
-
-    /* Center slide text vertically */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
 
 .swiper-slide img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.swiper-slide {
-    padding-left: 5px;
-    padding-right: 5px;
-    width: 20%;
-    height: 100%;
 }
 
 
