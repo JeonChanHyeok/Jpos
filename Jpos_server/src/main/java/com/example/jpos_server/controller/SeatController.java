@@ -10,6 +10,7 @@ import com.example.jpos_server.service.SeatService;
 import com.example.jpos_server.service.StoreService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +26,14 @@ public class SeatController {
     private final MenuService menuService;
     private final StoreService storeService;
 
-
-    @GetMapping("/{storeLoginId}")
-    public String loadSeatsAndOrderAndMenus(@PathVariable String storeLoginId) throws JsonProcessingException {
+    // 가게 좌석 / 주문 전체 불러오기
+    @GetMapping("/{storeId}")
+    public String loadSeatsAndOrderAndMenus(@PathVariable Long storeId) throws JsonProcessingException {
         SeatResponse seatResponse = new SeatResponse();
 
-        seatResponse.setSeatDtoList(seatService.searchSeats(storeLoginId));
-        seatResponse.setPosOrderDtoLost(posOrderService.searchPosOrderByStoreLoginId(storeLoginId, 1));
-        seatResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeLoginId)));
+        seatResponse.setSeatDtoList(seatService.searchSeats(storeId));
+        seatResponse.setPosOrderDtoLost(posOrderService.searchPosOrderByStoreLoginId(storeId, 1));
+        seatResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -50,11 +51,11 @@ public class SeatController {
         return objectMapper.writeValueAsString(menuAndOrderResponse);
     }
 
-    @GetMapping("/setting/{storeLoginId}")
-    public String loadSeats(@PathVariable String storeLoginId) throws JsonProcessingException{
+    @GetMapping("/setting/{storeId}")
+    public String loadSeats(@PathVariable Long storeId) throws JsonProcessingException{
         SeatResponse seatResponse = new SeatResponse();
 
-        seatResponse.setSeatDtoList(seatService.searchSeats(storeLoginId));
+        seatResponse.setSeatDtoList(seatService.searchSeats(storeId));
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -68,10 +69,8 @@ public class SeatController {
     }
 
     @PostMapping("/setting/add")
-    public String addSeat(AddSeatRequest addSeatRequest){
-        log.info(addSeatRequest.getStoreLoginId());
-        log.info(addSeatRequest.getSeatName());
-        seatService.addSeat(addSeatRequest.getStoreLoginId(), addSeatRequest.getSeatName());
+    public String addSeat(@RequestBody @Valid AddSeatRequest addSeatRequest){
+        seatService.addSeat(addSeatRequest.getStoreId(), addSeatRequest.getSeatName());
         return "추가 완료";
     }
 }

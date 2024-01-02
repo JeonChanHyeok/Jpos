@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -22,26 +23,16 @@ public class StoreController {
     private final StoreService storeService;
     private final SeatService seatService;
 
-    @PostMapping("/sign-up")
-    @ResponseBody
-    public String signUp(StoreDto storeDto){
-        if(storeService.makeStore(storeDto)){
-            return "가입완료";
-        }else{
-            return "가입실패";
-        }
-    }
-
     @GetMapping("{storeLoginId}")
-    public String loadStoreName(@PathVariable String storeLoginId){
+    public String loadStoreName(@PathVariable Long storeLoginId){
         return storeService.searchStore(storeLoginId).getStoreName();
     }
 
     @GetMapping("/qr/{storeLoginId}")
-    public String loadSeatsForQr(@PathVariable String storeLoginId) throws JsonProcessingException {
+    public String loadSeatsForQr(@PathVariable Long storeLoginId) throws JsonProcessingException {
         QrResponse qrResponse = new QrResponse();
 
-        qrResponse.setStoreId(storeRepository.findByStoreLoginId(storeLoginId).getId());
+        qrResponse.setStoreId(storeLoginId);
         qrResponse.setSeatDtoList(seatService.searchSeats(storeLoginId));
 
         ObjectMapper objectMapper = new ObjectMapper();

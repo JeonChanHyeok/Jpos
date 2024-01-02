@@ -63,11 +63,14 @@ export default {
             });
         },
         addSeat() {
-            this.axios.post("/jpos/seat/setting/add", null, {
-                params:{
-                    storeLoginId: this.$store.state.storeLoginId,
-                    seatName: this.newTableName,
-                }
+            const postData = {
+                storeId: this.$store.state.storeLoginId,
+                seatName: this.newTableName,
+            }
+            this.axios.post("/jpos/seat/setting/add", JSON.stringify(postData), {
+                headers: {
+                    "Content-Type": "application/json"
+                },
             }).then(res => {
                 alert(res.data);
                 this.get();

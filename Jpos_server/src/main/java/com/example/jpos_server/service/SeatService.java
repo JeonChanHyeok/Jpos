@@ -23,8 +23,8 @@ public class SeatService {
     private final PosOrderService posOrderService;
 
     @Transactional(readOnly = true)
-    public List<SeatDto> searchSeats(String storeLoginId) {
-        return seatRepository.findByStore(storeRepository.findByStoreLoginId(storeLoginId));
+    public List<SeatDto> searchSeats(Long storeId) {
+        return seatRepository.findByStore(storeRepository.findById(storeId).get());
     }
 
     @Transactional(readOnly = true)
@@ -49,9 +49,9 @@ public class SeatService {
         seatRepository.deleteById(seatId);
     }
 
-    public void addSeat(String storeLoginId, String seatName){
+    public void addSeat(Long storeId, String seatName){
         Seat seat = new Seat();
-        seat.setStore(storeRepository.findByStoreLoginId(storeLoginId));
+        seat.setStore(storeRepository.findById(storeId).get());
         seat.setSeatName(seatName);
         seatRepository.save(seat);
     }

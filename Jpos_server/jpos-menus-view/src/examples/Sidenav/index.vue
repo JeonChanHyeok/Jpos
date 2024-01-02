@@ -1,7 +1,7 @@
 <template>
     <aside
             id="sidenav-main"
-            class="my-3 overflow-auto border-0 sidenav navbar navbar-vertical navbar-expand-xs border-radius-xl"
+            class="my-3 overflow-auto border-0 border-end border-1 sidenav navbar navbar-vertical navbar-expand-xs border-radius-xl"
             :class="$store.state.isRTL ? 'me-3 rotate-caret' : 'ms-3'"
             :data-color="sidenavActiveBgColors"
     >

@@ -3,13 +3,11 @@ package com.example.jpos_server.controller;
 import com.example.jpos_server.dto.PosOrderDto;
 import com.example.jpos_server.repository.StoreRepository;
 import com.example.jpos_server.service.PosOrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/jpos/order")
@@ -22,13 +20,13 @@ public class PosOrderController {
 
     @PostMapping("/qr")
     @ResponseBody
-    public String addOrder(PosOrderDto posOrderDto){
+    public String addOrder(@RequestBody @Valid PosOrderDto posOrderDto){
         if(posOrderDto.id() == 0){
             posOrderService.addPosOrder(posOrderDto);
         }else{
             posOrderService.updatePosOrder(posOrderDto);
         }
-        sendingOperations.convertAndSend("/send/"+storeRepository.findById(posOrderDto.storeId()).get().getStoreLoginId(),"yeah");
+        sendingOperations.convertAndSend("/send/"+storeRepository.findById(posOrderDto.storeId()).get().getId(),"yeah");
         return "주문 완료";
     }
 }

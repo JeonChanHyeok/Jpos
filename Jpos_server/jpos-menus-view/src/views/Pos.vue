@@ -37,11 +37,17 @@ export default {
     },
     methods: {
         stompCreate() {
-            const serverURL = "http://61.101.89.253:8080/ws";
+            debugger
+            const serverURL = "http://116.123.197.103:8080/ws";
             let socket = new SockJS(serverURL);
             this.stompClient = Stomp.over(socket);
+            const user = JSON.parse(localStorage.getItem("accessToken"));
+            const token = 'Bearer ' + user?.token;
+            const headers = {
+                'Authorization' : token
+            }
             this.stompClient.connect(
-                {},
+                headers,
                 () => {
                     this.connected = true;
                     this.get();
@@ -50,6 +56,7 @@ export default {
                     });
                 },
             )
+            debugger
         },
         get() {
             this.axios.get("/jpos/seat/" + this.$store.state.storeLoginId).then(res => {
@@ -75,7 +82,7 @@ export default {
                 }
             })
         },
-        inOrder(id){
+        inOrder(id) {
             router.push({
                 name: 'InOrder',
                 params: {
@@ -90,7 +97,7 @@ export default {
 };
 </script>
 <style>
-.card-text{
+.card-text {
     font-size: 10px;
 }
 </style>

@@ -29,11 +29,15 @@
                         <form role="form">
                             <div class="mb-3">
                                 <input type="text" class="form-control" :class="getClasses('default', false)"
-                                       aria-label="storeLoginId" v-model="storeLoginId" placeholder="Id"/>
+                                       aria-label="storeLoginId" v-model="loginId" placeholder="Id"/>
                             </div>
                             <div class="mb-3">
                                 <input type="password" class="form-control" :class="getClasses('default', false)"
-                                       aria-label="storeLoginPw" v-model="storeLoginPw" placeholder="Password"/>
+                                       aria-label="storeLoginPw" v-model="loginPw" placeholder="Password"/>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" :class="getClasses('default', false)"
+                                       aria-label="storeName" v-model="userName" placeholder="Name"/>
                             </div>
                             <div class="mb-3">
                                 <input type="text" class="form-control" :class="getClasses('default', false)"
@@ -89,8 +93,9 @@ export default {
     data() {
         return {
             bgImg,
-            storeLoginId: "",
-            storeLoginPw: "",
+            loginId: "",
+            loginPw: "",
+            userName: "",
             storeName: "",
             latitude: "",
             longitude: "",
@@ -107,18 +112,23 @@ export default {
             return `${sizeValue} ${isValidValue}`;
         },
         signUp() {
+            const user = {
+                loginId: this.loginId,
+                loginPw: this.loginPw,
+                userName: this.userName,
+                storeName: this.storeName,
+                role: "ROLE_OWNER",
+                latitude: this.latitude,
+                longitude: this.longitude
+            }
             try {
-                this.axios.post("/jpos/store/sign-up", null, {
-                    params: {
-                        storeLoginId: this.storeLoginId,
-                        storeLoginPw: this.storeLoginPw,
-                        storeName: this.storeName,
-                        latitude: this.latitude,
-                        longitude: this.longitude,
-                    }
+                this.axios.post("/jpos/user/signup", JSON.stringify(user), {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                 }).then((res) => {
                     if(res.data.errorCode === 400){
-                        alert(res.data.errorMessage);
+                        alert("중복된 아이디입니다.");
                     }else{
                         alert("가입 완료");
                         router.push('/sign-in')

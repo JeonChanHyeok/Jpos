@@ -1,17 +1,16 @@
 <template>
     <header>
-        <div class="row">
-            <div class="col-9">
+        <div class="row p-0 m-0">
+            <div class="col-9 p-0 m-0">
                 <h1 class="text-truncate">가게명: {{ this.storeName }}</h1>
             </div>
-            <div class="col-3">
+            <div class="col-3 p-0 m-0 text-end">
                 <vsud-button @click="orderModalOpen()">주문</vsud-button>
             </div>
         </div>
         <h1>좌석: {{ this.seatName }}</h1>
     </header>
-
-    <div class="modal-wrap" v-show="this.orderModal" @click="orderModalOpen()">
+    <div class="modal-wrap" style="" v-show="this.orderModal" @click="orderModalOpen()">
         <div class="modal-mobile" @click.stop="">
             <div class="modal-content">
                 <div class="modal-header">
@@ -30,25 +29,25 @@
         </div>
     </div>
 
-<!--원래 모달창으로 품목 추가하려 했는데 모바일 환경에서 버튼이 계속 모달창 위로 취소-->
-<!--    <div class="modal-wrap" v-for="(item) in menus.filter((i) => this.menus.at(i.index).modal)"-->
-<!--         @click="menuCountModalOpen(item.index)">-->
-<!--        <div class="modal-mobile" @click.stop="">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title">{{ item.menuName }}</h5>-->
-<!--                </div>-->
-<!--                <div class="modal-body">-->
-<!--                    현재 {{ item.count }}개-->
-<!--                </div>-->
-<!--                <div class="modal-footer">-->
-<!--                    <vsud-button @click="addOrder(item.index)">+1</vsud-button>-->
-<!--                    <vsud-button @click="minusOrder(item.index)">-1</vsud-button>-->
-<!--                    <vsud-button @click="saveOrder(item.index)">주문저장</vsud-button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+  <!--원래 모달창으로 품목 추가하려 했는데 모바일 환경에서 버튼이 계속 모달창 위로 취소-->
+  <!--    <div class="modal-wrap" v-for="(item) in menus.filter((i) => this.menus.at(i.index).modal)"-->
+  <!--         @click="menuCountModalOpen(item.index)">-->
+  <!--        <div class="modal-mobile" @click.stop="">-->
+  <!--            <div class="modal-content">-->
+  <!--                <div class="modal-header">-->
+  <!--                    <h5 class="modal-title">{{ item.menuName }}</h5>-->
+  <!--                </div>-->
+  <!--                <div class="modal-body">-->
+  <!--                    현재 {{ item.count }}개-->
+  <!--                </div>-->
+  <!--                <div class="modal-footer">-->
+  <!--                    <vsud-button @click="addOrder(item.index)">+1</vsud-button>-->
+  <!--                    <vsud-button @click="minusOrder(item.index)">-1</vsud-button>-->
+  <!--                    <vsud-button @click="saveOrder(item.index)">주문저장</vsud-button>-->
+  <!--                </div>-->
+  <!--            </div>-->
+  <!--        </div>-->
+  <!--    </div>-->
 
 
   <!-- 카테고리 바 -->
@@ -70,22 +69,28 @@
     </swiper>
   <!-- 카테고리에 맞는 메뉴들 table로 표시 -->
     <div style="padding: 0">
-        <div class="row m-0 p-0" v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories" :key="i">
+        <div class="row m-0 p-0" v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories"
+             :key="i">
             <h2>{{ category.categoryName }}</h2>
             <div class="row m-0 p-0 border-top border-3">
                 <div class="col-6 m-0 p-0 border text-center"><h5>이름</h5></div>
                 <div class="col-3 m-0 p-0 border text-center"><h5>가격</h5></div>
                 <div class="col-3 m-0 p-0 border text-center"><h5>수량</h5></div>
             </div>
-            <div class="row m-0 p-0 border-top border-3" v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
+            <div class="row m-0 p-0 border-top border-3"
+                 v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
                 <div class="row m-0 p-0">
                     <div class="col-6 m-0 p-0 border text-center"><h5>{{ item.menuName }}</h5></div>
                     <div class="col-3 m-0 p-0 border text-center"><h5>{{ item.price }}</h5></div>
                     <div class="col-3 m-0 p-0 border text-center"><h5>{{ item.count }}</h5></div>
                 </div>
                 <div class="row m-0 p-0 border-bottom border-3">
-                    <div class="col-6 m-0 p-1 text-center"><vsud-button @click="minusOrder(item.index)" style="width: 100%">-1</vsud-button></div>
-                    <div class="col-6 m-0 p-1 text-center"><vsud-button @click="addOrder(item.index)" style="width: 100%">+1</vsud-button></div>
+                    <div class="col-6 m-0 p-1 text-center">
+                        <vsud-button @click="minusOrder(item.index)" style="width: 100%">-1</vsud-button>
+                    </div>
+                    <div class="col-6 m-0 p-1 text-center">
+                        <vsud-button @click="addOrder(item.index)" style="width: 100%">+1</vsud-button>
+                    </div>
                 </div>
             </div>
 
@@ -199,15 +204,19 @@ export default {
                         this.posOrder.posOrderContent += this.menus.at(i).id + "," + this.menus.at(i).count + "/";
                     }
                 }
-                this.axios.post("/jpos/order/qr", null, {
-                    params: {
-                        id: this.posOrder.id,
-                        posOrderContent: this.posOrder.posOrderContent,
-                        posOrderPrice: this.posOrder.posOrderPrice,
-                        storeId: this.posOrder.storeId,
-                        seatId: this.posOrder.seatId,
-                        state: this.posOrder.state,
-                    }
+
+                const orderData = {
+                    id: this.posOrder.id,
+                    posOrderContent: this.posOrder.posOrderContent,
+                    posOrderPrice: this.posOrder.posOrderPrice,
+                    storeId: this.posOrder.storeId,
+                    seatId: this.posOrder.seatId,
+                    state: this.posOrder.state,
+                }
+                this.axios.post("/jpos/order/qr", JSON.stringify(orderData), {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                 }).then((res) => {
                     alert(res.data);
                     router.go(0);
@@ -308,9 +317,10 @@ export default {
 </script>
 
 <style>
-html{
+html {
     margin-right: 0;
 }
+
 table {
     width: 100vw;
     text-align: left;
@@ -340,6 +350,21 @@ table tr:nth-of-type(even) {
     top: 0;
 }
 
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 20%;
+    height: 100%;
+}
+
 
 .swiper-slide img {
     display: block;
@@ -347,6 +372,7 @@ table tr:nth-of-type(even) {
     height: 100%;
     object-fit: cover;
 }
+
 
 
 

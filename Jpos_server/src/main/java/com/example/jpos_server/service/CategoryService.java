@@ -1,5 +1,6 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.domain.Category;
 import com.example.jpos_server.domain.Store;
 import com.example.jpos_server.dto.CategoryDto;
 import com.example.jpos_server.repository.CategoryRepository;
@@ -19,4 +20,7 @@ public class CategoryService {
     public List<CategoryDto> searchCategories(Store store){
         return categoryRepository.findByStore(store);
     }
+
+    @Transactional(readOnly = true)
+    public Category searchCategory(Long id) {return categoryRepository.findById(id).get();}
 }

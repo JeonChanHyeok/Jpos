@@ -9,6 +9,4 @@ import java.util.Optional;
 
 @RepositoryRestResource
 public interface StoreRepository extends JpaRepository<Store, Long> {
-    Store findByStoreLoginId(String storeLoginId);
-    boolean existsByStoreLoginId(String storeLoginId);
 }

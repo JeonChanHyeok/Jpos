@@ -20,12 +20,12 @@
                                     <form role="form" class="text-start">
                                         <label>ID</label>
                                         <input type="text" class="form-control" :class="getClasses('default', false)"
-                                               placeholder="Id" name="storeLoginId" v-model="storeLoginId"/>
+                                               placeholder="Id" name="storeLoginId" v-model="loginId"/>
                                         <label>Password</label>
                                         <input type="password" class="form-control"
                                                :class="getClasses('default', false)" placeholder="Password"
                                                name="storeLoginPw"
-                                               v-model="storeLoginPw"/>
+                                               v-model="loginPw"/>
                                         <div class="text-center">
                                             <vsud-button
                                                     type="button"
@@ -92,9 +92,8 @@ export default {
     data() {
         return {
             bgImg,
-            storeLoginId: "",
-            storeLoginPw: "",
-            rememberMe: false,
+            loginId: "",
+            loginPw: "",
         }
     },
     methods: {
@@ -109,19 +108,22 @@ export default {
         },
         loginSubmit() {
             try {
-                this.axios.post("/jpos/store/sign-in", null, {
-                    params: {
-                        storeLoginId: this.storeLoginId,
-                        storeLoginPw: this.storeLoginPw,
-                        remamberMe: this.rememberMe,
-                    }
+                const loginData = {
+                    loginId: this.loginId,
+                    loginPw: this.loginPw,
+                }
+                this.axios.post("/jpos/user/login", JSON.stringify(loginData), {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                 }).then((res) => {
-                    if(res.data.status === 401){
-                        alert(res.data.message);
-                    }else if(res.data.status === 201){
-                        this.$store.commit('login', res.data.message);
+                    if(res.data.status === 409){
+                        alert("로그인 오류");
+                    }else{
+                        localStorage.setItem("accessToken", JSON.stringify(res.data));
+                        this.$store.commit("login", res.data.storeId);
                         alert("로그인 성공");
-                        router.push("/dashboard");
+                        router.push("/main/dashboard");
                     }
                 });
             } catch (error) {

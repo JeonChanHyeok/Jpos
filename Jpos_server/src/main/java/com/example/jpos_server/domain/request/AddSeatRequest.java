@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class AddSeatRequest {
-    String storeLoginId;
+    Long storeId;
     String seatName;
 
-    public AddSeatRequest(String storeLoginId, String seatName){
-        this.storeLoginId = storeLoginId;
+    public AddSeatRequest(Long storeId, String seatName){
+        this.storeId = storeId;
         this.seatName = seatName;
     }
 }

@@ -24,7 +24,6 @@ public class Seat {
     private Store store; // 가게
 
 
-
     public Seat() {
     }
 
