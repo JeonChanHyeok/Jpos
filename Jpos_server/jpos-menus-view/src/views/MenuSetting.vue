@@ -89,7 +89,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="row row-cols-6">
+                            <div class="row row-cols-6 p-0">
                                 <!--  기존 메뉴  -->
                                 <div class="col border"
                                      v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
