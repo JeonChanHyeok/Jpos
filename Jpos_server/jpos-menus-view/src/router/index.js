@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import menusView from "@/views/Menus.vue";
 import mainView from "@/views/Main.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import Pos from "@/views/Pos.vue";
@@ -10,14 +9,15 @@ import InOrder from "@/views/InOrder.vue";
 import MenuSetting from "@/views/MenuSetting.vue";
 import TableSetting from "@/views/TableSetting.vue";
 import QrCode from "@/views/QrCode.vue";
+import QrOrder from "@/views/QrOrder.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: '/menus/:storeName/:seatName',
-            name: 'menusView',
-            component: menusView,
+            path: '/qrOrder/:storeName/:seatName',
+            name: 'qrOrderView',
+            component: QrOrder,
         },
         {
             path: "/sign-in",
@@ -35,42 +35,37 @@ const router = createRouter({
             component: mainView,
             children: [
                 {
-                    path: "/",
-                    name: "/",
-                    redirect: "/dashboard",
-                },
-                {
-                    path: "/dashboard",
+                    path: "/main/dashboard",
                     name: "Dashboard",
                     component: Dashboard,
                 },
                 {
-                    path: "/pos",
+                    path: "/main/pos",
                     name: "Pos",
                     component: Pos,
                 },
                 {
-                    path: "/inorder",
+                    path: "/main/inOrder",
                     name: "InOrder",
                     component: InOrder,
                 },
                 {
-                    path: "/menuSetting",
+                    path: "/main/menuSetting",
                     name: "MenuSetting",
                     component: MenuSetting,
                 },
                 {
-                    path: "/profile",
+                    path: "/main/profile",
                     name: "Profile",
                     component: Profile,
                 },
                 {
-                    path: "/tableSetting",
+                    path: "/main/tableSetting",
                     name: "TableSetting",
                     component: TableSetting,
                 },
                 {
-                    path: "/qrCode",
+                    path: "/main/qrCode",
                     name: "QrCode",
                     component: QrCode,
                 },

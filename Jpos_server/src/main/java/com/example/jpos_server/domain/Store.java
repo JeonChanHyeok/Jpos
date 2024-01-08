@@ -1,11 +1,15 @@
 package com.example.jpos_server.domain;
 
+import com.example.jpos_server.domain.User.Authority;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString
@@ -27,20 +31,11 @@ public class Store {
     @Column(nullable = false)
     private Double longitude; // 가게 좌표 이용을 위한 경도
 
-    @Setter
-    @Column(nullable = false)
-    private String storeLoginId;
 
-    @Setter
-    @Column(nullable = false)
-    private String storeLoginPw;
-
-    public Store(String storeName, Double latitude, Double longitude, String storeLoginId, String storeLoginPw) {
+    public Store(String storeName, Double latitude, Double longitude) {
         this.storeName = storeName;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.storeLoginId = storeLoginId;
-        this.storeLoginPw = storeLoginPw;
     }
 
     public Store() {

@@ -1,8 +1,9 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.domain.Seat;
 import com.example.jpos_server.dto.PosOrderDto;
 import com.example.jpos_server.dto.SeatDto;
-import com.example.jpos_server.dto.resp.MenuAndOrderResponse;
+import com.example.jpos_server.domain.response.MenuAndOrderResponse;
 import com.example.jpos_server.repository.SeatRepository;
 import com.example.jpos_server.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,8 @@ public class SeatService {
     private final PosOrderService posOrderService;
 
     @Transactional(readOnly = true)
-    public List<SeatDto> searchSeats(String storeLoginId) {
-        return seatRepository.findByStore(storeRepository.findByStoreLoginId(storeLoginId));
+    public List<SeatDto> searchSeats(Long storeId) {
+        return seatRepository.findByStore(storeRepository.findById(storeId).get());
     }
 
     @Transactional(readOnly = true)
@@ -42,5 +43,16 @@ public class SeatService {
         menuAndOrderResponse.setPosOrderDto(posOrderDto);
 
         return menuAndOrderResponse;
+    }
+
+    public void deleteSeat(Long seatId){
+        seatRepository.deleteById(seatId);
+    }
+
+    public void addSeat(Long storeId, String seatName){
+        Seat seat = new Seat();
+        seat.setStore(storeRepository.findById(storeId).get());
+        seat.setSeatName(seatName);
+        seatRepository.save(seat);
     }
 }

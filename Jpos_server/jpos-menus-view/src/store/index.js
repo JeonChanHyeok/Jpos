@@ -1,4 +1,5 @@
 import {createStore} from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
     state: {
@@ -16,9 +17,14 @@ export default createStore({
         showFooter: true,
         showMain: true,
         isLogined: false,
-        storeLoginId: "",
+        storeLoginId: null,
         storeName: "",
     },
+    plugins: [
+        createPersistedState({
+            paths: ["createStore"]
+        })
+    ],
     mutations: {
         toggleConfigurator(state) {
             state.showConfig = !state.showConfig;
@@ -55,11 +61,11 @@ export default createStore({
             state.storeLoginId = payload;
             state.isLogined = true;
         },
-        logout(state){
+        logout(state) {
             state.storeLoginId = "";
             state.isLogined = false;
         },
-        setStoreName(state, payload){
+        setStoreName(state, payload) {
             state.storeName = payload;
         },
     },

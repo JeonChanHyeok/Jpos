@@ -25,8 +25,8 @@ public class PosOrderService {
         return posOrderRepository.findBySeatAndState(seatRepository.findById(seatId).get(),state);
     }
     @Transactional(readOnly = true)
-    public List<PosOrderDto> searchPosOrderByStoreLoginId(String storeLoginId, int state) {
-        return posOrderRepository.findByStoreAndState(storeService.searchStore(storeLoginId),state);
+    public List<PosOrderDto> searchPosOrderByStoreLoginId(Long storeId, int state) {
+        return posOrderRepository.findByStoreAndState(storeService.searchStore(storeId),state);
     }
 
 

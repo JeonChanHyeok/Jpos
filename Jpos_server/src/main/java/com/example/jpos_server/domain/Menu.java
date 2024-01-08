@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
@@ -21,16 +23,24 @@ public class Menu {
 
     @Setter
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Store store; // 가게
 
     @Setter
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category; // 카테고리
 
     @Setter
     @Column(nullable = false)
     private int price; // 가격
-    
+
+    public Menu(String menuName, Store store, Category category, int price) {
+        this.menuName = menuName;
+        this.store = store;
+        this.category = category;
+        this.price = price;
+    }
 
     public Menu() {
     }

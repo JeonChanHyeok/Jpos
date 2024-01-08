@@ -7,20 +7,16 @@ import java.io.Serializable;
 /**
  * DTO for {@link com.example.jpos_server.domain.Store}
  */
-public record StoreDto(String storeName, Double latitude, Double longitude, String storeLoginId,
-                       String storeLoginPw) implements Serializable {
+public record StoreDto(String storeName, Double latitude, Double longitude) implements Serializable {
 
-    public static StoreDto of(String storeName, Double latitude, Double longitude, String storeLoginId,
-                              String storeLoginPw){
-        return new StoreDto(storeName, latitude, longitude, storeLoginId, storeLoginPw);
+    public static StoreDto of(String storeName, Double latitude, Double longitude){
+        return new StoreDto(storeName, latitude, longitude);
     }
     public static StoreDto from(Store store){
         return new StoreDto(
                 store.getStoreName(),
                 store.getLatitude(),
-                store.getLongitude(),
-                store.getStoreLoginId(),
-                store.getStoreLoginPw()
+                store.getLongitude()
         );
     }
 }

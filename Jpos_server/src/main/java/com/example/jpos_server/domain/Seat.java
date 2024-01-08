@@ -23,6 +23,7 @@ public class Seat {
     @ManyToOne(optional = false)
     private Store store; // 가게
 
+
     public Seat() {
     }
 

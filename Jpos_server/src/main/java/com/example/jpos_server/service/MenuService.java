@@ -2,6 +2,8 @@ package com.example.jpos_server.service;
 
 import com.example.jpos_server.domain.Menu;
 import com.example.jpos_server.domain.Store;
+import com.example.jpos_server.domain.request.NewMenuRequest;
+import com.example.jpos_server.domain.request.UpdateMenuRequest;
 import com.example.jpos_server.dto.MenuDto;
 import com.example.jpos_server.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +18,28 @@ import java.util.List;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
+    private final StoreService storeService;
+    private final CategoryService categoryService;
 
     @Transactional(readOnly = true)
     public List<MenuDto> searchMenus(Store store){
         return menuRepository.findByStore(store);
     }
 
+    public void addMenu(NewMenuRequest newMenuRequest){
+        Menu newMenu = new Menu(newMenuRequest.getMenuName(), storeService.searchStore(newMenuRequest.getStoreId()), categoryService.searchCategory(newMenuRequest.getMenuCategory()), newMenuRequest.getMenuPrice());
+        menuRepository.save(newMenu);
+    }
+
+    public void deleteMenu(Long menuId){
+        menuRepository.deleteById(menuId);
+    }
+
+    @Transactional
+    public void updateMenu(Long menuId, UpdateMenuRequest updateMenuRequest){
+        Menu menu = menuRepository.findById(menuId).get();
+        menu.setMenuName(updateMenuRequest.getMenuName());
+        menu.setCategory(categoryService.searchCategory(updateMenuRequest.getMenuCategory()));
+        menu.setPrice(updateMenuRequest.getMenuPrice());
+    }
 }

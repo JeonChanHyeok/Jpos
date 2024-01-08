@@ -1,22 +1,21 @@
 package com.example.jpos_server.config.security;
 
-import com.example.jpos_server.config.security.handler.LoginFailureHandler;
-import com.example.jpos_server.config.security.handler.LoginSuccessHandler;
-import com.example.jpos_server.repository.StoreRepository;
+import com.example.jpos_server.service.UserAccountDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,16 +31,42 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final StoreRepository storeRepository;
+
+    private final UserAccountDetailsService userAccountDetailsService;
+    private final AuthEntryPointJwt authEntryPointJwt;
+
     @Bean
-    public static BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userAccountDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPointJwt))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/menus/**"),
@@ -49,35 +74,29 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/favicon.ico"),
                                 new AntPathRequestMatcher("/sign-in"),
                                 new AntPathRequestMatcher("/sign-up"),
-                                new AntPathRequestMatcher("/jpos/store/**"),
-                                new AntPathRequestMatcher("/jpos/seat/order/**"),
-                                new AntPathRequestMatcher("/jpos/order/qr"),
-                                new AntPathRequestMatcher("/jpos/seat/**"),
-                                new AntPathRequestMatcher("/ws/**"),
-                                new AntPathRequestMatcher("/send/**")).permitAll()
+                                new AntPathRequestMatcher("/qrOrder/**"),
+                                new AntPathRequestMatcher("/jpos/qrOrder/**"),
+                                new AntPathRequestMatcher("/jpos/user/login"),
+                                new AntPathRequestMatcher("/jpos/user/signup"),
+                                new AntPathRequestMatcher("/ws/**")
+                                ).permitAll()
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/jpos/seat/setting/**"),
+                                new AntPathRequestMatcher("/jpos/menu/setting/**"),
+                                new AntPathRequestMatcher("/main/**"),
+                                new AntPathRequestMatcher("/"),
+                                new AntPathRequestMatcher("/**")
+                        ).hasRole("OWNER")
                         .anyRequest().authenticated()
                 )
-                .formLogin(login -> login
-                        .usernameParameter("storeLoginId")
-                        .passwordParameter("storeLoginPw")
-                        .loginPage("/sign-in")
-                        .loginProcessingUrl("/jpos/store/sign-in")
-                        .successHandler(new LoginSuccessHandler())
-                        .failureHandler(new LoginFailureHandler()))
-                .logout(logout -> logout.logoutSuccessUrl("/"))
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        return new CustomAuthenticationProvider();
     }
 
 
