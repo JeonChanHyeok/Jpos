@@ -74,8 +74,8 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/favicon.ico"),
                                 new AntPathRequestMatcher("/sign-in"),
                                 new AntPathRequestMatcher("/sign-up"),
-                                new AntPathRequestMatcher("/jpos/seat/order/**/**"),
-                                new AntPathRequestMatcher("/jpos/order/qr"),
+                                new AntPathRequestMatcher("/qrOrder/**"),
+                                new AntPathRequestMatcher("/jpos/qrOrder/**"),
                                 new AntPathRequestMatcher("/jpos/user/login"),
                                 new AntPathRequestMatcher("/jpos/user/signup"),
                                 new AntPathRequestMatcher("/ws/**")

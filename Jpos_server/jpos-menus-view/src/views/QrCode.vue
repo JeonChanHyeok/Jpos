@@ -5,7 +5,7 @@
                 <div class="card" style="height: 200px;">
                     <div class="p-3 mx-4 text-bolder card-header card-text">{{ seat.seatName }}</div>
                     <div class="p-3 pt-0 card-body">
-                        <img :src="`https://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=http://116.123.197.103:8080/menus/` + this.storeId + `/` + seat.id"/>
+                        <img :src="`https://chart.apis.google.com/chart?cht=qr&chs=150x150&chl=http://116.123.197.103:8080/qrOrder/` + this.storeId + `/` + seat.id"/>
                     </div>
                 </div>
             </div>

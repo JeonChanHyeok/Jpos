@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import menusView from "@/views/Menus.vue";
 import mainView from "@/views/Main.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import Pos from "@/views/Pos.vue";
@@ -10,15 +9,15 @@ import InOrder from "@/views/InOrder.vue";
 import MenuSetting from "@/views/MenuSetting.vue";
 import TableSetting from "@/views/TableSetting.vue";
 import QrCode from "@/views/QrCode.vue";
-import Temp from "@/views/Temp.vue";
+import QrOrder from "@/views/QrOrder.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: '/menus/:storeName/:seatName',
-            name: 'menusView',
-            component: menusView,
+            path: '/qrOrder/:storeName/:seatName',
+            name: 'qrOrderView',
+            component: QrOrder,
         },
         {
             path: "/sign-in",
@@ -29,11 +28,6 @@ const router = createRouter({
             path: "/sign-up",
             name: "Sign Up",
             component: SignUp,
-        },
-        {
-            path: "/temp",
-            name: "TempPage",
-            component: Temp,
         },
         {
             path: '/main',
@@ -51,7 +45,7 @@ const router = createRouter({
                     component: Pos,
                 },
                 {
-                    path: "/main/inorder",
+                    path: "/main/inOrder",
                     name: "InOrder",
                     component: InOrder,
                 },

@@ -28,28 +28,6 @@
             </div>
         </div>
     </div>
-
-  <!--원래 모달창으로 품목 추가하려 했는데 모바일 환경에서 버튼이 계속 모달창 위로 취소-->
-  <!--    <div class="modal-wrap" v-for="(item) in menus.filter((i) => this.menus.at(i.index).modal)"-->
-  <!--         @click="menuCountModalOpen(item.index)">-->
-  <!--        <div class="modal-mobile" @click.stop="">-->
-  <!--            <div class="modal-content">-->
-  <!--                <div class="modal-header">-->
-  <!--                    <h5 class="modal-title">{{ item.menuName }}</h5>-->
-  <!--                </div>-->
-  <!--                <div class="modal-body">-->
-  <!--                    현재 {{ item.count }}개-->
-  <!--                </div>-->
-  <!--                <div class="modal-footer">-->
-  <!--                    <vsud-button @click="addOrder(item.index)">+1</vsud-button>-->
-  <!--                    <vsud-button @click="minusOrder(item.index)">-1</vsud-button>-->
-  <!--                    <vsud-button @click="saveOrder(item.index)">주문저장</vsud-button>-->
-  <!--                </div>-->
-  <!--            </div>-->
-  <!--        </div>-->
-  <!--    </div>-->
-
-
   <!-- 카테고리 바 -->
     <swiper
             :slidesPerView="5"
@@ -95,24 +73,6 @@
             </div>
 
         </div>
-
-        <!--        <h2 v-for="(category,i) in categories.filter((w) => w.index > 0)" ref="categories" :key="i">-->
-        <!--            {{ category.categoryName }}<br>-->
-        <!--            <table>-->
-        <!--                <thead>-->
-        <!--                <th v-for="item in menuTableHeads">{{ item }}</th>-->
-        <!--                </thead>-->
-        <!--                <tbody>-->
-        <!--                <tr v-for="(item) in menus.filter((c) => c.categoryId === category.id)">-->
-        <!--                    <td>{{ item.menuName }}</td>-->
-        <!--                    <td>{{ item.price }}</td>-->
-        <!--                    <td>-->
-        <!--                        <vsud-button @click="menuCountModalOpen(item.index)">주문</vsud-button>-->
-        <!--                    </td>-->
-        <!--                </tr>-->
-        <!--                </tbody>-->
-        <!--            </table>-->
-        <!--        </h2>-->
     </div>
 </template>
 
@@ -148,9 +108,9 @@ export default {
     },
     // 메소드 정의
     methods: {
-        // get 으로 데이터 파싱 /jpos/seat/order/가게id/좌석id 입력
+        // get 으로 데이터 파싱 /jpos/qr-order/가게id/좌석id 입력
         get() {
-            this.axios.get("/jpos/seat/order/" + this.$route.params.storeName + "/" + this.$route.params.seatName).then(res => {
+            this.axios.get("/jpos/qrOrder/" + this.$route.params.storeName + "/" + this.$route.params.seatName).then(res => {
                 this.storeName = res.data.storeName;
                 this.seatName = res.data.seatName;
                 //카테고리 맨 처음에 맨 위로 버튼 만들기 위해 먼저 하나 푸쉬
@@ -213,7 +173,7 @@ export default {
                     seatId: this.posOrder.seatId,
                     state: this.posOrder.state,
                 }
-                this.axios.post("/jpos/order/qr", JSON.stringify(orderData), {
+                this.axios.post("/jpos/qrOrder/order/add", JSON.stringify(orderData), {
                     headers: {
                         "Content-Type": "application/json"
                     },

@@ -58,7 +58,7 @@ export default {
             return `${sizeValue} ${isValidValue}`;
         },
         get() {
-            this.axios.get("/jpos/seat/setting/" + this.$store.state.storeLoginId).then(res => {
+            this.axios.get("/jpos/seatSetting/" + this.$store.state.storeLoginId).then(res => {
                 this.seats = JSON.parse(JSON.stringify(res.data.seatDtoList));
             });
         },
@@ -67,7 +67,7 @@ export default {
                 storeId: this.$store.state.storeLoginId,
                 seatName: this.newTableName,
             }
-            this.axios.post("/jpos/seat/setting/add", JSON.stringify(postData), {
+            this.axios.post("/jpos/seatSetting/add", JSON.stringify(postData), {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -77,7 +77,7 @@ export default {
             });
         },
         deleteSeat(i) {
-            this.axios.delete("/jpos/seat/setting/delete/" + this.seats.at(i).id).then(res => {
+            this.axios.delete("/jpos/seatSetting/delete/" + this.seats.at(i).id).then(res => {
                 alert(res.data);
                 this.get();
             })

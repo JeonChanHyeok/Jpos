@@ -59,7 +59,7 @@ export default {
             debugger
         },
         get() {
-            this.axios.get("/jpos/seat/" + this.$store.state.storeLoginId).then(res => {
+            this.axios.get("/jpos/pos/" + this.$store.state.storeLoginId).then(res => {
                 this.seats = JSON.parse(JSON.stringify(res.data.seatDtoList));
                 this.posOrders = JSON.parse(JSON.stringify(res.data.posOrderDtoLost));
                 this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList));

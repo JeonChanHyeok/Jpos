@@ -83,7 +83,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                                          fill="currentColor"
                                          class="bi bi-dash-circle center" viewBox="0 0 16 16"
-                                         @click="this.deleteCategory(categoty.index);">
+                                         @click="this.deleteCategory(category.index);">
                                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                         <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
                                     </svg>
@@ -128,7 +128,7 @@
                         <div class="row border">
                             <div class="col-1"></div>
                             <div class="col-10 text-center my-auto">
-                                <input type="text" style="width: 100%"
+                                <input type="text" style="width: 80%"
                                        class="form-control"
                                        :class="getClasses('default', false)"
                                        v-model="newCategoryName"
@@ -183,13 +183,13 @@ export default {
             return `${sizeValue} ${isValidValue}`;
         },
         getMenus() {
-            this.axios.get("/jpos/menu/setting/" + this.$store.state.storeLoginId).then(res => {
-                this.categories = JSON.parse(JSON.stringify(res.data.categoryDtoList)); // 코드 가독성 올리기 위해 만든 임시 변수
+            this.axios.get("/jpos/menuSetting/" + this.$store.state.storeLoginId).then(res => {
+                this.categories = JSON.parse(JSON.stringify(res.data.categoryDtoList));
                 for (var i = 0; i < this.categories.length; i++) {
                     this.categories.at(i).index = i;
                     this.categories.at(i).modal = false;
-                } // 맨위로 버튼 다음에 쭉쭉 카테고리 추가
-                this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList)); // 메뉴 추가
+                }
+                this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList));
                 for (var i = 0; i < this.menus.length; i++) {
                     this.menus.at(i).index = i;
                     this.menus.at(i).modal = false;
@@ -197,8 +197,40 @@ export default {
             });
         },
         addCategory() {
+            if(this.newCategoryName === ""){
+                alert("카테고리 이름을 입력해 주세요.")
+                return;
+            }
+            for(let category of this.categories){
+                if(category.categoryName === this.newCategoryName){
+                    alert("이미 같은 이름의 카테고리가 있습니다.")
+                    return;
+                }
+            }
+            const newCategory = {
+                categoryName: this.newCategoryName,
+                storeId: this.$store.state.storeLoginId
+            }
+            this.axios.post("/jpos/menuSetting/category/add", JSON.stringify(newCategory), {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }).then((res) => {
+                alert(res.data);
+                this.newCategoryName = "";
+                this.getMenus();
+            })
+
         },
-        deleteCategory() {
+        deleteCategory(categoryIndex) {
+            if(confirm("하위 메뉴까지 모두 삭제됩니다. 정말 삭제하시겠습니까?") === true){
+                this.axios.delete("/jpos/menuSetting/category/delete/" + this.categories.at(categoryIndex).id).then(res => {
+                    alert(res.data);
+                    this.getMenus();
+                })
+            }else{
+                return;
+            }
         },
         addMenu(categoryIndex) {
             this.newMenuCategory = categoryIndex;
@@ -221,7 +253,7 @@ export default {
                     menuCategory: this.categories.at(this.newMenuCategory).id,
                     menuPrice: this.newMenuPrice
                 }
-                this.axios.post("/jpos/menu/setting/add", JSON.stringify(newMenu),{
+                this.axios.post("/jpos/menuSetting/menu/add", JSON.stringify(newMenu),{
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -239,12 +271,16 @@ export default {
                 alert("내용을 다 채워주십시오.");
                 return;
             }else{
+                if(this.updateMenuPrice < 0){
+                    alert("가격을 다시 입력해주세요.");
+                    return;
+                }
                 const updateMenuData = {
-                    menuName: this.updateMenuCategory,
+                    menuName: this.updateMenuName,
                     menuCategory: this.categories.at(this.updateMenuCategory).id,
                     menuPrice: this.updateMenuPrice
                 }
-                this.axios.patch("/jpos/menu/setting/update/" + this.menus.at(menuIndex).id, JSON.stringify(updateMenuData),{
+                this.axios.patch("/jpos/menuSetting/menu/update/" + this.menus.at(menuIndex).id, JSON.stringify(updateMenuData),{
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -259,7 +295,7 @@ export default {
         },
         deleteMenu(menuIndex) {
             if(confirm("정말 삭제하시겠습니까?") === true){
-                this.axios.delete("/jpos/menu/setting/delete/" + this.menus.at(menuIndex).id).then(res => {
+                this.axios.delete("/jpos/menuSetting/menu/delete/" + this.menus.at(menuIndex).id).then(res => {
                     alert(res.data);
                     this.getMenus();
                 })

@@ -9,9 +9,9 @@ Coded by www.creative-tim.com
 =========================================================
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/ 
+*/
 
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import store from "./store";
 import router from "./router";
@@ -30,12 +30,12 @@ app.config.globalProperties.$store = store;
 axios.interceptors.request.use(
     function (config) {
         debugger
-        if(config.url !== "/jpos/user/login" && config.url !== "/jpos/user/signup"){
+        if (config.url !== "/jpos/user/login" && config.url !== "/jpos/user/signup") {
             const user = JSON.parse(localStorage.getItem("accessToken"));
             const token = user?.token;
-            if(token){
+            if (token) {
                 config.headers["Authorization"] = 'Bearer ' + token;
-            }else{
+            } else {
             }
         }
         // 요청이 전달되기 전에 작업 수행
@@ -60,13 +60,8 @@ axios.interceptors.response.use(
         if (error.response && error.response.status) {
             switch (error.response.status) {
                 case 401:
-                    const user = JSON.parse(localStorage.getItem("accessToken"));
-                    if(user){
-                        router.push('/main').catch(() => {});
-                    }else{
-                        alert("잘못된 접근입니다.")
-                        router.push('/sign-in').catch(() => {});
-                    }
+                    alert("잘못된 접근입니다.")
+                    router.push('/sign-in').catch(() => {});
                     break;
                 default:
                     return Promise.reject(error);
@@ -75,7 +70,6 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     },
 );
-
 
 
 app.use(store)
