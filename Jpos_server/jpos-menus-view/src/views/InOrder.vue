@@ -2,7 +2,7 @@
     <div class="container-fluid mt-4">
         <div class="row align-items-center">
             <div class="col-lg-4 col-sm-8">
-                {{ this.$store.state.storeName }} - {{ $route.params.seatId }}
+                {{ this.$store.state.storeName }} - {{ this.seatId }}
             </div>
         </div>
         <div class="container-fluid">
@@ -113,16 +113,17 @@ export default {
     components: {
         VsudButton,
     },
+
     data() {
         return {
             categories: [], // 카테고리들
             menus: [], // 메뉴들
+            seatId: history.state.seatId,
         };
     },
     methods: {
         getMenus() {
-
-            this.axios.get("/jpos/inOrder/" + this.$store.state.storeLoginId).then(res => {
+            this.axios.get("/jpos/inOrder/menu/" + this.$store.state.storeLoginId).then(res => {
                 this.categories = JSON.parse(JSON.stringify(res.data.categoryDtoList));
                 for (var i = 0; i < this.categories.length; i++) {
                     this.categories.at(i).index = i;

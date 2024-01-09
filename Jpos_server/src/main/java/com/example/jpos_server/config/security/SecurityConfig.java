@@ -81,8 +81,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/ws/**")
                                 ).permitAll()
                         .requestMatchers(
-                                new AntPathRequestMatcher("/jpos/seat/setting/**"),
-                                new AntPathRequestMatcher("/jpos/menu/setting/**"),
+                                new AntPathRequestMatcher("/jpos/**"),
                                 new AntPathRequestMatcher("/main/**"),
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/**")

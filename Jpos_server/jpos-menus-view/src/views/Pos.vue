@@ -83,9 +83,10 @@ export default {
             })
         },
         inOrder(id) {
+            alert(id);
             router.push({
                 name: 'InOrder',
-                params: {
+                state: {
                     seatId: id,
                 }
             });
