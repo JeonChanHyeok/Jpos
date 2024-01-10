@@ -17,8 +17,7 @@
                     <h5 class="modal-title">현재 주문</h5>
                 </div>
                 <div class="modal-body">
-                    <p v-if="this.posOrder.state === 0">현재 주문 내용이 없습니다.</p>
-                    <p v-else-if="this.posOrder.state === 1" v-html="this.orderContentName"></p>
+                    <p v-html="this.orderContentName"></p>
                 </div>
                 <div class="modal-footer">
                     총 금액: {{ this.posOrder.posOrderPrice }} 원
@@ -120,30 +119,28 @@ export default {
                     weight: 'normal',
                 });
                 const tempJson = JSON.parse(JSON.stringify(res.data.categoryDtoList)); // 코드 가독성 올리기 위해 만든 임시 변수
-                for (var i = 1; i < tempJson.length + 1; i++) {
+                for (let i = 1; i < tempJson.length + 1; i++) {
                     this.categories.push(tempJson.at(i - 1));
                     this.categories.at(i).index = i;
                     this.categories.at(i).weight = 'normal';
                 } // 맨위로 버튼 다음에 쭉쭉 카테고리 추가
                 this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList)); // 메뉴 추가
-                for (var i = 0; i < this.menus.length; i++) {
+                for (let i = 0; i < this.menus.length; i++) {
                     this.menus.at(i).count = 0;
                     this.menus.at(i).index = i;
                     this.menus.at(i).modal = false;
                 }
                 this.posOrder = JSON.parse(JSON.stringify(res.data.posOrderDto));
                 if (this.posOrder.id !== 0) {
-                    for (i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
+                    for (let i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
                         for (var j = 0; j < this.menus.length; j++) {
                             if (((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[0] === "" + this.menus.at(j).id) {
                                 this.menus.at(j).count = Number(((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[1]);
                             }
                         }
                     }
-                    for (var i = 0; i < this.menus.length; i++) {
-                        if (this.menus.at(i).count === 0) {
-                            continue;
-                        } else {
+                    for (let i = 0; i < this.menus.length; i++) {
+                        if (this.menus.at(i).count !== 0) {
                             this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
                         }
                     }
@@ -157,10 +154,8 @@ export default {
                 this.orderModalOpen()
             } else {
                 this.posOrder.posOrderContent = "";
-                for (var i = 0; i < this.menus.length; i++) {
-                    if (this.menus.at(i).count === 0) {
-                        continue;
-                    } else {
+                for (let i = 0; i < this.menus.length; i++) {
+                    if (this.menus.at(i).count !== 0) {
                         this.posOrder.posOrderContent += this.menus.at(i).id + "," + this.menus.at(i).count + "/";
                     }
                 }
@@ -171,7 +166,6 @@ export default {
                     posOrderPrice: this.posOrder.posOrderPrice,
                     storeId: this.posOrder.storeId,
                     seatId: this.posOrder.seatId,
-                    state: this.posOrder.state,
                 }
                 this.axios.post("/jpos/qrOrder/order/add", JSON.stringify(orderData), {
                     headers: {
@@ -191,47 +185,20 @@ export default {
         minusOrder(n) {
             if (this.menus.at(n).count === 0) {
                 alert("주문된 내용이 없습니다.")
-                return;
             } else {
                 this.posOrder.posOrderPrice -= this.menus.at(n).price;
                 this.menus.at(n).count -= 1;
             }
         },
-        // saveOrder() {
-        //     this.orderContentName = ""
-        //     for (var i = 0; i < this.menus.length; i++) {
-        //         if (this.menus.at(i).count === 0) {
-        //             continue;
-        //         } else {
-        //             this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
-        //         }
-        //     }
-        //     if (this.orderContentName === "") {
-        //         this.posOrder.state = 0;
-        //     } else {
-        //         this.posOrder.state = 1;
-        //     }
-        // },
         orderModalOpen() {
             this.orderContentName = ""
-            for (var i = 0; i < this.menus.length; i++) {
-                if (this.menus.at(i).count === 0) {
-                    continue;
-                } else {
+            for (let i = 0; i < this.menus.length; i++) {
+                if (this.menus.at(i).count !== 0) {
                     this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
                 }
             }
-            if (this.orderContentName === "") {
-                this.posOrder.state = 0;
-            } else {
-                this.posOrder.state = 1;
-            }
             this.orderModal = !this.orderModal;
         },
-        // menuCountModalOpen(n) {
-        //     this.menus.at(n).modal = !this.menus.at(n).modal;
-        //     return;
-        // },
         // 카테고리 바 클릭 시 해당 카테고리 위치로 이동 및 bold체 변경 ( 나머지 카테고리 bold 해제 ) .
         clickSlide(n) {
             for (let i = 0; i < this.categories.length; i++) {
@@ -332,8 +299,6 @@ table tr:nth-of-type(even) {
     height: 100%;
     object-fit: cover;
 }
-
-
 
 
 </style>

@@ -21,17 +21,17 @@ public class PosOrderService {
     private final StoreService storeService;
 
     @Transactional(readOnly = true)
-    public PosOrderDto searchPosOrderBySeatId(Long seatId, int state) {
-        return posOrderRepository.findBySeatAndState(seatRepository.findById(seatId).get(),state);
+    public PosOrderDto searchPosOrderBySeatId(Long seatId) {
+        return posOrderRepository.findBySeat(seatRepository.findById(seatId).get()).orElse(PosOrderDto.of(0L, "주문이 없습니다.", 0, seatRepository.findById(seatId).get().getStore().getId(), seatId));
     }
     @Transactional(readOnly = true)
-    public List<PosOrderDto> searchPosOrderByStoreLoginId(Long storeId, int state) {
-        return posOrderRepository.findByStoreAndState(storeService.searchStore(storeId),state);
+    public List<PosOrderDto> searchPosOrderByStoreLoginId(Long storeId) {
+        return posOrderRepository.findByStore(storeService.searchStore(storeId));
     }
 
 
     public void addPosOrder(PosOrderDto posOrderDto) {
-        PosOrder posOrder = new PosOrder(posOrderDto.posOrderContent(), posOrderDto.posOrderPrice(), storeRepository.findById(posOrderDto.storeId()).get(), seatRepository.findById(posOrderDto.seatId()).get(), posOrderDto.state());
+        PosOrder posOrder = new PosOrder(posOrderDto.posOrderContent(), posOrderDto.posOrderPrice(), storeRepository.findById(posOrderDto.storeId()).get(), seatRepository.findById(posOrderDto.seatId()).get());
         posOrderRepository.save(posOrder);
     }
 
@@ -40,7 +40,6 @@ public class PosOrderService {
         PosOrder posOrder = posOrderRepository.findById(posOrderDto.id()).get();
         posOrder.setPosOrderContent(posOrderDto.posOrderContent());
         posOrder.setPosOrderPrice(posOrderDto.posOrderPrice());
-        posOrder.setState(posOrderDto.state());
     }
 
 }

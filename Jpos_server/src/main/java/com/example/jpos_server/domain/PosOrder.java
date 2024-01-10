@@ -35,17 +35,12 @@ public class PosOrder {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Seat seat; // 주문 자리
 
-    @Setter
-    @Column
-    @ColumnDefault("0")
-    private int state; // 주문 상태 (0: 주문 없음(기본 값), 1: 주문 진행중, 2: 완료된 주문, 3: 취소된 주문)
 
-    public PosOrder(String posOrderContent, int posOrderPrice, Store store, Seat seat, int state) {
+    public PosOrder(String posOrderContent, int posOrderPrice, Store store, Seat seat) {
         this.posOrderContent = posOrderContent;
         this.posOrderPrice = posOrderPrice;
         this.store = store;
         this.seat = seat;
-        this.state = state;
     }
 
     public PosOrder() {

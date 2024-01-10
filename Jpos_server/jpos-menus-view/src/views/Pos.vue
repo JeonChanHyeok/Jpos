@@ -37,7 +37,6 @@ export default {
     },
     methods: {
         stompCreate() {
-            debugger
             const serverURL = "http://116.123.197.103:8080/ws";
             let socket = new SockJS(serverURL);
             this.stompClient = Stomp.over(socket);
@@ -53,10 +52,10 @@ export default {
                     this.get();
                     this.stompClient.subscribe("/send/" + this.$store.state.storeLoginId, res => {
                         this.get();
+                        component()
                     });
                 },
             )
-            debugger
         },
         get() {
             this.axios.get("/jpos/pos/" + this.$store.state.storeLoginId).then(res => {

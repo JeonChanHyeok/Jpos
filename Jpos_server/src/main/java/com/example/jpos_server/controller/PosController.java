@@ -28,7 +28,7 @@ public class PosController {
         SeatResponse seatResponse = new SeatResponse();
 
         seatResponse.setSeatDtoList(seatService.searchSeats(storeId));
-        seatResponse.setPosOrderDtoLost(posOrderService.searchPosOrderByStoreLoginId(storeId, 1));
+        seatResponse.setPosOrderDtoLost(posOrderService.searchPosOrderByStoreLoginId(storeId));
         seatResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
 
         ObjectMapper objectMapper = new ObjectMapper();

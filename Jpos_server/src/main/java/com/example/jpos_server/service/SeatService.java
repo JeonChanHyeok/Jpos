@@ -23,26 +23,22 @@ public class SeatService {
     private final PosOrderService posOrderService;
 
     @Transactional(readOnly = true)
-    public List<SeatDto> searchSeats(Long storeId) {
-        return seatRepository.findByStore(storeRepository.findById(storeId).get());
+    public boolean correctSeat(Long storeId, Long seatId){
+        if (seatRepository.existsById(seatId)){
+            return seatRepository.findById(seatId).get().getStore().getId().equals(storeId);
+        }else{
+            return false;
+        }
     }
 
     @Transactional(readOnly = true)
-    public MenuAndOrderResponse searchMenusAndOrder(Long storeId, Long seatId) {
-        MenuAndOrderResponse menuAndOrderResponse = new MenuAndOrderResponse();
+    public SeatDto searchSeat(Long seatId){
+        return SeatDto.from(seatRepository.findById(seatId).get());
+    }
 
-
-        menuAndOrderResponse.setStoreName(storeRepository.findById(storeId).get().getStoreName());
-        menuAndOrderResponse.setSeatName(seatRepository.findById(seatId).get().getSeatName());
-        menuAndOrderResponse.setMenuDtoList(menuService.searchMenus(storeRepository.findById(storeId).get()));
-        menuAndOrderResponse.setCategoryDtoList(categoryService.searchCategories(storeRepository.findById(storeId).get()));
-        PosOrderDto posOrderDto = posOrderService.searchPosOrderBySeatId(seatId, 1);
-        if (posOrderDto == null){
-            posOrderDto = new PosOrderDto(0L, "", 0, storeId, seatId, 0);
-        }
-        menuAndOrderResponse.setPosOrderDto(posOrderDto);
-
-        return menuAndOrderResponse;
+    @Transactional(readOnly = true)
+    public List<SeatDto> searchSeats(Long storeId) {
+        return seatRepository.findByStore(storeRepository.findById(storeId).get());
     }
 
     public void deleteSeat(Long seatId){

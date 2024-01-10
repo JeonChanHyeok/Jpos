@@ -28,21 +28,15 @@
                                     금액
                                 </div>
                             </div>
-                            <div class="row" style="height: 50px">
+                            <div class="row" v-for="(menu) in menus.filter((m) => m.count > 0)">
                                 <div class="col-7 border">
-                                <span class="align-middle">
-                                    김치찌개
-                                </span>
+                                    {{ menu.menuName }}
                                 </div>
                                 <div class="col-2 border">
-                                <span class="align-middle">
-                                    100
-                                </span>
+                                    {{ menu.count }}
                                 </div>
                                 <div class="col-3 border">
-                                <span class="align-middle">
-                                    1000000
-                                </span>
+                                    {{ menu.count * menu.price }}
                                 </div>
                             </div>
                         </div>
@@ -57,15 +51,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body p-3 pb-0 mb-0" style="overflow: scroll">
-                            <div class="row" v-for="(category) in categories">
-                                <div class="row border">
+                        <div class="card-body p-0 m-0" style="overflow: scroll">
+                            <div class="row p-0 m-0" v-for="(category) in categories">
+                                <div class="row border p-0 m-0">
                                     <div class="col-1"></div>
                                     <div class="col-10 text-center my-auto">
                                         {{ category.categoryName }}
                                     </div>
                                 </div>
-                                <div class="row row-cols-6 p-0">
+                                <div class="row row-cols-6 p-0 m-0">
                                     <!--  기존 메뉴  -->
                                     <div class="col border"
                                          v-for="(item) in menus.filter((c) => c.categoryId === category.id)">
@@ -85,12 +79,11 @@
                 </div>
             </div>
             <div class="row mt-1">
-                <div class="col-8">
-                </div>
-                <div class="col-4 align-content-end">
-                    <vsud-button class="m-1">주문하기</vsud-button>
-                    <vsud-button class="m-1">결제하기</vsud-button>
-                    <vsud-button class="m-1">닫기</vsud-button>
+                <div class="col-8"></div>
+                <div class="col-4">
+                    <vsud-button class="m-1 float-end">닫기</vsud-button>
+                    <vsud-button class="m-1 float-end">주문하기</vsud-button>
+                    <vsud-button class="m-1 float-end">결제하기</vsud-button>
                 </div>
             </div>
         </div>
@@ -99,13 +92,6 @@
 
 <script>
 import setTooltip from "@/assets/js/tooltip.js";
-import NavPill from "./components/NavPill.vue";
-import MasterCard from "@/examples/Cards/MasterCard.vue";
-import DefaultInfoCard from "@/examples/Cards/DefaultInfoCard.vue";
-import PaymentCard from "./components/PaymentCard.vue";
-import InvoiceCard from "./components/InvoiceCard.vue";
-import BillingCard from "./components/BillingCard.vue";
-import TransactionCard from "./components/TransactionCard.vue";
 import VsudButton from "@/components/VsudButton.vue";
 
 export default {
@@ -113,30 +99,41 @@ export default {
     components: {
         VsudButton,
     },
-
     data() {
         return {
             categories: [], // 카테고리들
             menus: [], // 메뉴들
+            posOrder: {},
             seatId: history.state.seatId,
         };
     },
     methods: {
         getMenus() {
-            this.axios.get("/jpos/inOrder/menu/" + this.$store.state.storeLoginId).then(res => {
+            this.axios.get("/jpos/inOrder/" + this.$store.state.storeLoginId + "/" + this.seatId).then(res => {
                 this.categories = JSON.parse(JSON.stringify(res.data.categoryDtoList));
-                for (var i = 0; i < this.categories.length; i++) {
+                for (let i = 0; i < this.categories.length; i++) {
                     this.categories.at(i).index = i;
                 }
                 this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList));
-                for (var i = 0; i < this.menus.length; i++) {
+                for (let i = 0; i < this.menus.length; i++) {
+                    this.menus.at(i).count = 0;
                     this.menus.at(i).index = i;
+                }
+                this.posOrder = JSON.parse(JSON.stringify(res.data.posOrderDto));
+                if (this.posOrder.id !== 0) {
+                    for (let i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
+                        for (let j = 0; j < this.menus.length; j++) {
+                            if (((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[0] === "" + this.menus.at(j).id) {
+                                this.menus.at(j).count = Number(((this.posOrder.posOrderContent || '').split("/")[i] || '').split(",")[1]);
+                            }
+                        }
+                    }
                 }
             });
         },
     },
     mounted() {
-        setTooltip();
+        this.getMenus();
     },
 };
 </script>
