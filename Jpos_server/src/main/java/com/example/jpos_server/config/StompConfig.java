@@ -14,13 +14,14 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/send");
+
+        registry.enableSimpleBroker("/send", "/qrOrderOnOff");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws/pos").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws/qrOrder").setAllowedOriginPatterns("*").withSockJS();
     }
 
 }

@@ -7,16 +7,17 @@ import java.io.Serializable;
 /**
  * DTO for {@link com.example.jpos_server.domain.Seat}
  */
-public record SeatDto(Long id, String seatName){
+public record SeatDto(Long id, String seatName, int posUsing){
 
-    public static SeatDto of(Long id, String seatName){
-        return new SeatDto(id, seatName);
+    public static SeatDto of(Long id, String seatName, int posUsing){
+        return new SeatDto(id, seatName, posUsing);
     }
 
     public static SeatDto from(Seat seat){
         return new SeatDto(
                 seat.getId(),
-                seat.getSeatName()
+                seat.getSeatName(),
+                seat.getPosUsing()
         );
     }
 }

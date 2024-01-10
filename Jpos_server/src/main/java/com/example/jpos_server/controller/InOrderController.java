@@ -3,17 +3,14 @@ package com.example.jpos_server.controller;
 
 import com.example.jpos_server.domain.response.MenuAndOrderResponse;
 import com.example.jpos_server.dto.PosOrderDto;
-import com.example.jpos_server.service.CategoryService;
-import com.example.jpos_server.service.MenuService;
-import com.example.jpos_server.service.PosOrderService;
-import com.example.jpos_server.service.StoreService;
+import com.example.jpos_server.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.web.bind.annotation.*;
 
 
 //1. qrorder에 이미 들어와 있는 상태에서 inorder 접속시
@@ -30,9 +27,13 @@ public class InOrderController {
     private final StoreService storeService;
     private final CategoryService categoryService;
     private final PosOrderService posOrderService;
+    private final SeatService seatService;
+    private final SimpMessageSendingOperations sendingOperations;
+
 
     @GetMapping("/{storeId}/{seatId}")
     public String loadAllMenusAndCategories(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
+        seatService.setPosUsing(seatId, 1);
         MenuAndOrderResponse menuAndOrderResponse = new MenuAndOrderResponse();
         menuAndOrderResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
         menuAndOrderResponse.setCategoryDtoList(categoryService.searchCategories(storeService.searchStore(storeId)));
@@ -40,8 +41,33 @@ public class InOrderController {
         menuAndOrderResponse.setPosOrderDto(posOrderDto);
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
 
         return objectMapper.writeValueAsString(menuAndOrderResponse);
+    }
+
+    @PatchMapping("/{seatId}")
+    public void setPosUnUsing(@PathVariable Long seatId){
+        seatService.setPosUsing(seatId, 0);
+        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
+
+    }
+
+    @PostMapping("/order/add")
+    public String addOrder(@RequestBody @Valid PosOrderDto posOrderDto){
+        if(posOrderDto.id() == 0){
+            posOrderService.addPosOrder(posOrderDto);
+        }else{
+            posOrderService.updatePosOrder(posOrderDto);
+        }
+        return "주문 완료";
+    }
+
+    @PostMapping("/order/end")
+    public String endOrder(@RequestBody @Valid PosOrderDto posOrderDto){
+
+        return "주문 완료";
     }
 
 }

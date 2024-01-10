@@ -13,6 +13,7 @@ import java.util.List;
 public class MenuAndOrderResponse {
     String storeName;
     String seatName;
+    int posUsing;
     List<MenuDto> menuDtoList;
     List<CategoryDto> categoryDtoList;
     PosOrderDto posOrderDto;

@@ -3,7 +3,16 @@
         <div class="row mt-1 row-cols-6" style="height: max-content">
             <div v-for="(seat) in seats" class="col mb-2 mt-2">
                 <div class="card" @click="inOrder(seat.id)" style="height: 200px;">
-                    <div class="p-3 mx-4 text-bolder card-header card-text">{{ seat.seatName }}</div>
+                    <div class="p-3 mx-4 text-bolder card-header card-text">
+                        <div class="row">
+                            <div class="col-6">
+                                {{ seat.seatName }}
+                            </div>
+                            <div class="col-6">
+                                <p class="float-end">{{ seat.orderTime }}</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="p-3 pt-0 card-body text" style="overflow: scroll">
                         <p class="card-text" v-html="seat.orderContent"/>
                     </div>
@@ -37,7 +46,7 @@ export default {
     },
     methods: {
         stompCreate() {
-            const serverURL = "http://116.123.197.103:8080/ws";
+            const serverURL = "http://116.123.197.103:8080/ws/pos";
             let socket = new SockJS(serverURL);
             this.stompClient = Stomp.over(socket);
             const user = JSON.parse(localStorage.getItem("accessToken"));
@@ -52,7 +61,6 @@ export default {
                     this.get();
                     this.stompClient.subscribe("/send/" + this.$store.state.storeLoginId, res => {
                         this.get();
-                        component()
                     });
                 },
             )
@@ -63,15 +71,18 @@ export default {
                 this.posOrders = JSON.parse(JSON.stringify(res.data.posOrderDtoLost));
                 this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList));
 
-                for (var i = 0; i < this.seats.length; i++) {
+                for (let i = 0; i < this.seats.length; i++) {
                     this.seats.at(i).orderContent = "";
-                    for (var j = 0; j < this.posOrders.length; j++) {
+                    for (let j = 0; j < this.posOrders.length; j++) {
                         if (this.seats.at(i).id === this.posOrders.at(j).seatId) {
                             this.seats.at(i).orderPrice = this.posOrders.at(j).posOrderPrice;
-                            for (var k = 0; k < (this.posOrders.at(j).posOrderContent || '').split("/").length; k++) {
-                                for (var l = 0; l < this.menus.length; l++) {
+                            if(this.posOrders.at(j).createdDate !== null){
+                                this.seats.at(i).orderTime = this.posOrders.at(j).createdDate.at(3) + " : " + this.posOrders.at(j).createdDate.at(4);
+                            }
+                            for (let k = 0; k < (this.posOrders.at(j).posOrderContent || '').split("/").length; k++) {
+                                for (let l = 0; l < this.menus.length; l++) {
                                     if (((this.posOrders.at(j).posOrderContent || '').split("/")[k] || '').split(",")[0] === "" + this.menus.at(l).id) {
-                                        var count = Number(((this.posOrders.at(j).posOrderContent || '').split("/")[k] || '').split(",")[1]);
+                                        let count = Number(((this.posOrders.at(j).posOrderContent || '').split("/")[k] || '').split(",")[1]);
                                         this.seats.at(i).orderContent += this.menus.at(l).menuName + " " + count + "개/ " + this.menus.at(l).price * count + "원<br/>"
                                     }
                                 }
@@ -89,9 +100,9 @@ export default {
                     seatId: id,
                 }
             });
-        }
+        },
     },
-    created() {
+    mounted() {
         this.stompCreate();
     }
 };

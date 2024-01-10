@@ -22,7 +22,7 @@ public class PosOrderService {
 
     @Transactional(readOnly = true)
     public PosOrderDto searchPosOrderBySeatId(Long seatId) {
-        return posOrderRepository.findBySeat(seatRepository.findById(seatId).get()).orElse(PosOrderDto.of(0L, "주문이 없습니다.", 0, seatRepository.findById(seatId).get().getStore().getId(), seatId));
+        return posOrderRepository.findBySeat(seatRepository.findById(seatId).get()).orElse(PosOrderDto.of(0L, "주문이 없습니다.", 0, seatRepository.findById(seatId).get().getStore().getId(), seatId, null, null));
     }
     @Transactional(readOnly = true)
     public List<PosOrderDto> searchPosOrderByStoreLoginId(Long storeId) {

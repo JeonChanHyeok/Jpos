@@ -1,5 +1,6 @@
 package com.example.jpos_server.domain.User;
 
+import com.example.jpos_server.domain.BaseTimeEntity;
 import com.example.jpos_server.domain.Seat;
 import com.example.jpos_server.domain.Store;
 import jakarta.persistence.*;

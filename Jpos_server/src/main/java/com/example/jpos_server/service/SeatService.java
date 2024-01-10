@@ -1,9 +1,7 @@
 package com.example.jpos_server.service;
 
 import com.example.jpos_server.domain.Seat;
-import com.example.jpos_server.dto.PosOrderDto;
 import com.example.jpos_server.dto.SeatDto;
-import com.example.jpos_server.domain.response.MenuAndOrderResponse;
 import com.example.jpos_server.repository.SeatRepository;
 import com.example.jpos_server.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +16,6 @@ import java.util.List;
 public class SeatService {
     private final SeatRepository seatRepository;
     private final StoreRepository storeRepository;
-    private final MenuService menuService;
-    private final CategoryService categoryService;
-    private final PosOrderService posOrderService;
 
     @Transactional(readOnly = true)
     public boolean correctSeat(Long storeId, Long seatId){
@@ -50,5 +45,11 @@ public class SeatService {
         seat.setStore(storeRepository.findById(storeId).get());
         seat.setSeatName(seatName);
         seatRepository.save(seat);
+    }
+
+    @Transactional
+    public void setPosUsing(Long seatId, int posUsing){
+        Seat seat = seatRepository.findById(seatId).get();
+        seat.setPosUsing(posUsing);
     }
 }

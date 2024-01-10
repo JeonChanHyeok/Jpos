@@ -1,4 +1,4 @@
-select * from authority;
+
 
 insert into store (store_name, latitude, longitude) values ('Edgepulse', 40.5235837, 19.8075358);
 insert into store (store_name, latitude, longitude) values ('Mydo', -27.0052075, -51.154395);

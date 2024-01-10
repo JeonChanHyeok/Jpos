@@ -6,6 +6,7 @@ import com.example.jpos_server.dto.PosOrderDto;
 import com.example.jpos_server.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -29,12 +30,14 @@ public class QrOrderController {
             MenuAndOrderResponse menuAndOrderResponse = new MenuAndOrderResponse();
             menuAndOrderResponse.setStoreName(storeService.searchStore(storeId).getStoreName());
             menuAndOrderResponse.setSeatName(seatService.searchSeat(seatId).seatName());
+            menuAndOrderResponse.setPosUsing(seatService.searchSeat(seatId).posUsing());
             menuAndOrderResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
             menuAndOrderResponse.setCategoryDtoList(categoryService.searchCategories(storeService.searchStore(storeId)));
             PosOrderDto posOrderDto = posOrderService.searchPosOrderBySeatId(seatId);
             menuAndOrderResponse.setPosOrderDto(posOrderDto);
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
 
             return objectMapper.writeValueAsString(menuAndOrderResponse);
         }else{
@@ -43,7 +46,6 @@ public class QrOrderController {
     }
 
     @PostMapping("/order/add")
-    @ResponseBody
     public String addOrder(@RequestBody @Valid PosOrderDto posOrderDto){
         if(posOrderDto.id() == 0){
             posOrderService.addPosOrder(posOrderDto);

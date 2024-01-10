@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.Objects;
 
@@ -23,6 +25,10 @@ public class Seat {
     @ManyToOne(optional = false)
     private Store store; // 가게
 
+    @Setter
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer posUsing; // 포스기에서 사용중인지 확인하는 변수 0:사용안함 1:사용중
 
     public Seat() {
     }

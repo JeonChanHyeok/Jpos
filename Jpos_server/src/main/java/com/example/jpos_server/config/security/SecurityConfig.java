@@ -83,6 +83,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/jpos/**"),
                                 new AntPathRequestMatcher("/main/**"),
+                                //new AntPathRequestMatcher("/ws/**"),
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/**")
                         ).hasRole("OWNER")

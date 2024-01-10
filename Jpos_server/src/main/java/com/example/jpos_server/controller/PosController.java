@@ -7,6 +7,7 @@ import com.example.jpos_server.service.SeatService;
 import com.example.jpos_server.service.StoreService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ public class PosController {
         seatResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
 
         ObjectMapper objectMapper = new ObjectMapper();
-
+        objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(seatResponse);
     }
 }

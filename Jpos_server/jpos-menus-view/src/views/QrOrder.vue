@@ -27,6 +27,20 @@
             </div>
         </div>
     </div>
+
+    <div class="modal-wrap" style="" v-show="this.posModal">
+        <div class="modal-mobile">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">주문 불가</h5>
+                </div>
+                <div class="modal-body">
+                    <p>죄송합니다. 현재 카운터에서 주문을 수정하고 있습니다. 잠시만 기다려 주십시오.</p>
+                    <p>저장된 주문이 모두 취소되오니 다시 주문해 주시기 바랍니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
   <!-- 카테고리 바 -->
     <swiper
             :slidesPerView="5"
@@ -83,6 +97,8 @@ import VsudButton from "@/components/VsudButton.vue";
 // Import Swiper styles
 import 'swiper/css';
 import router from "@/router";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 export default {
     name: 'Menus',
@@ -103,15 +119,37 @@ export default {
             posOrder: {},
             orderModal: false,
             orderContentName: "",
+            posModal: false,
         }
     },
     // 메소드 정의
     methods: {
+        //포스기에서 자리 조작중엔 작동하면 안됨.
+        stompCreate() {
+            const serverURL = "http://116.123.197.103:8080/ws/qrOrder";
+            let socket = new SockJS(serverURL);
+            this.stompClient = Stomp.over(socket);
+            this.stompClient.connect(
+                {},
+                () => {
+                    this.get();
+                    this.stompClient.subscribe("/qrOrderOnOff/" + this.$route.params.seatName, res => {
+                        this.get();
+                    });
+                },
+            )
+        },
+
         // get 으로 데이터 파싱 /jpos/qr-order/가게id/좌석id 입력
         get() {
             this.axios.get("/jpos/qrOrder/" + this.$route.params.storeName + "/" + this.$route.params.seatName).then(res => {
                 this.storeName = res.data.storeName;
                 this.seatName = res.data.seatName;
+                if(res.data.posUsing === 1){
+                    this.posModal = true;
+                }else{
+                    this.posModal = false;
+                }
                 //카테고리 맨 처음에 맨 위로 버튼 만들기 위해 먼저 하나 푸쉬
                 this.categories.push({
                     index: 0,
@@ -145,6 +183,7 @@ export default {
                         }
                     }
                 }
+
                 this.isLoading = true; // true로 변경되고 카테고리 바 생성.
             });
         },
@@ -237,7 +276,7 @@ export default {
     },
     // 화면 나올때 초기화 하는 부분
     created() {
-        this.get();
+        this.stompCreate();
     },
 }
 

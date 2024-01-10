@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 @ToString
 @Entity
-public class EndPosOrder {
+public class EndPosOrder extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +29,8 @@ public class EndPosOrder {
     @Setter
     @Column(nullable = false)
     private int posOrderPrice; // 주문 가격
+
+
 
     @Override
     public boolean equals(Object obj) {
