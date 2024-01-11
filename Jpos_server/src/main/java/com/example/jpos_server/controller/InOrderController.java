@@ -41,6 +41,7 @@ public class InOrderController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        seatService.notify(seatId,"");
 
         return objectMapper.writeValueAsString(menuAndOrderResponse);
     }
@@ -48,7 +49,7 @@ public class InOrderController {
     @PatchMapping("/{seatId}")
     public void setPosUnUsing(@PathVariable Long seatId){
         seatService.setPosUsing(seatId, 0);
-        seatService.notify(seatId,null);
+        seatService.notify(seatId,"");
     }
 
     @PostMapping("/order/add")

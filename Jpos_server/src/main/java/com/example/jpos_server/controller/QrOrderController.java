@@ -59,7 +59,7 @@ public class QrOrderController {
         }else{
             posOrderService.updatePosOrder(posOrderDto);
         }
-        storeService.notify(posOrderDto.storeId(), null);
+        storeService.notify(posOrderDto.storeId(), "");
         return "주문 완료";
     }
 }

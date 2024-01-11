@@ -124,7 +124,7 @@ export default {
     // 메소드 정의
     methods: {
         //포스기에서 자리 조작중엔 작동하면 안됨.
-        connectEmiter() {
+        connectEmitter() {
             const eventSource = new EventSource('http://116.123.197.103:8080/jpos/qrOrder/sub/' + this.$route.params.seatName)
             eventSource.addEventListener('qrOrder', event => {
                 this.get();
@@ -137,6 +137,7 @@ export default {
                 this.storeName = res.data.storeName;
                 this.seatName = res.data.seatName;
                 if(res.data.posUsing === 1){
+                    this.orderModal = false;
                     this.posModal = true;
                 }else{
                     this.posModal = false;
@@ -266,8 +267,8 @@ export default {
 
     },
     // 화면 나올때 초기화 하는 부분
-    created() {
-        this.connectEmiter();
+    mounted() {
+        this.connectEmitter();
     },
 }
 

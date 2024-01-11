@@ -29,7 +29,6 @@ app.config.globalProperties.$store = store;
 // 요청 인터셉터 추가
 axios.interceptors.request.use(
     function (config) {
-        debugger
         if (config.url !== "/jpos/user/login" && config.url !== "/jpos/user/signup") {
             const user = JSON.parse(localStorage.getItem("accessToken"));
             const token = user?.token;

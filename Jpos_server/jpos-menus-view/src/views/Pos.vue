@@ -5,11 +5,11 @@
                 <div class="card" @click="inOrder(seat.id)" style="height: 200px;">
                     <div class="p-3 mx-4 text-bolder card-header card-text">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-8">
                                 {{ seat.seatName }}
                             </div>
-                            <div class="col-6">
-                                <p class="float-end">{{ seat.orderTime }}</p>
+                            <div class="col-4">
+                                {{ seat.orderTime }}
                             </div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
 <script>
 import AuthorsTable from "./components/AuthorsTable.vue";
 import ProjectsTable from "./components/ProjectsTable.vue";
-import EventSourcePolyfill from "event-source-polyfill";
+import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 import router from "@/router";
 
 export default {
@@ -44,15 +44,16 @@ export default {
         }
     },
     methods: {
-        connectEmiter() {
+        connectEmitter() {
             const user = JSON.parse(localStorage.getItem("accessToken"));
             const token = user?.token;
-            const EventSource = EventSourcePolyfill;
+            const EventSource = EventSourcePolyfill || NativeEventSource;
             const eventSource = new EventSource('http://116.123.197.103:8080/jpos/pos/sub/' + this.$store.state.storeLoginId, {
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    'Authorization': 'Bearer ' + token
                 },
-            })
+                withCredentials: true,
+            });
             eventSource.addEventListener('pos', event => {
                this.get();
             });
@@ -95,8 +96,8 @@ export default {
         },
     },
     mounted() {
-        this.connectEmiter();
-    }
+        this.connectEmitter();
+    },
 };
 </script>
 <style>

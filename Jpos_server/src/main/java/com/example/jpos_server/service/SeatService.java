@@ -73,7 +73,7 @@ public class SeatService {
         SseEmitter emitter = seatEmitterRepository.get(seatId);
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().id(String.valueOf(seatId)).name("pos").data(data));
+                emitter.send(SseEmitter.event().id(String.valueOf(seatId)).name("qrOrder").data(data));
             } catch (IOException exception) {
                 seatEmitterRepository.deleteById(seatId);
                 emitter.completeWithError(exception);
