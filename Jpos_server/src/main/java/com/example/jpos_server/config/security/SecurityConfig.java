@@ -77,13 +77,11 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/qrOrder/**"),
                                 new AntPathRequestMatcher("/jpos/qrOrder/**"),
                                 new AntPathRequestMatcher("/jpos/user/login"),
-                                new AntPathRequestMatcher("/jpos/user/signup"),
-                                new AntPathRequestMatcher("/ws/**")
+                                new AntPathRequestMatcher("/jpos/user/signup")
                                 ).permitAll()
                         .requestMatchers(
                                 new AntPathRequestMatcher("/jpos/**"),
                                 new AntPathRequestMatcher("/main/**"),
-                                //new AntPathRequestMatcher("/ws/**"),
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/**")
                         ).hasRole("OWNER")

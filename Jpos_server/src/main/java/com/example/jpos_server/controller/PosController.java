@@ -9,10 +9,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RequestMapping("/jpos/pos")
 @RestController
@@ -36,4 +38,10 @@ public class PosController {
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(seatResponse);
     }
+
+    @GetMapping(value = "/sub/{storeId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable Long storeId){
+        return storeService.subscribe(storeId);
+    }
+
 }

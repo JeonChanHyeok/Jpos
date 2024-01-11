@@ -28,7 +28,6 @@ public class InOrderController {
     private final CategoryService categoryService;
     private final PosOrderService posOrderService;
     private final SeatService seatService;
-    private final SimpMessageSendingOperations sendingOperations;
 
 
     @GetMapping("/{storeId}/{seatId}")
@@ -42,7 +41,6 @@ public class InOrderController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
 
         return objectMapper.writeValueAsString(menuAndOrderResponse);
     }
@@ -50,8 +48,7 @@ public class InOrderController {
     @PatchMapping("/{seatId}")
     public void setPosUnUsing(@PathVariable Long seatId){
         seatService.setPosUsing(seatId, 0);
-        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
-
+        seatService.notify(seatId,null);
     }
 
     @PostMapping("/order/add")

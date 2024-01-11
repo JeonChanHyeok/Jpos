@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RequestMapping("/jpos/qrOrder")
 @RestController
@@ -21,7 +23,6 @@ public class QrOrderController {
     private final CategoryService categoryService;
     private final PosOrderService posOrderService;
     private final StoreService storeService;
-    private final SimpMessageSendingOperations sendingOperations;
 
     @GetMapping("/{storeId}/{seatId}")
     public String loadMenusAndOrder(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
@@ -45,6 +46,12 @@ public class QrOrderController {
         }
     }
 
+    @GetMapping(value = "/sub/{seatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable Long seatId){
+        return seatService.subscribe(seatId);
+    }
+
+
     @PostMapping("/order/add")
     public String addOrder(@RequestBody @Valid PosOrderDto posOrderDto){
         if(posOrderDto.id() == 0){
@@ -52,7 +59,7 @@ public class QrOrderController {
         }else{
             posOrderService.updatePosOrder(posOrderDto);
         }
-        sendingOperations.convertAndSend("/send/"+posOrderDto.storeId(),"yeah");
+        storeService.notify(posOrderDto.storeId(), null);
         return "주문 완료";
     }
 }

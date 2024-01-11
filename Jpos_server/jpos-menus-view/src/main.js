@@ -59,7 +59,7 @@ axios.interceptors.response.use(
         // 응답 오류가 있는 작업 수행
         if (error.response && error.response.status) {
             switch (error.response.status) {
-                case 401:
+                case '401 Unauthorized':
                     alert("잘못된 접근입니다.")
                     router.push('/sign-in').catch(() => {});
                     break;
