@@ -24,6 +24,10 @@ public class EndPosOrder extends BaseTimeEntity{
 
     @Setter
     @Column(nullable = false)
+    private String seatName; // 주문 자리 이름
+
+    @Setter
+    @Column(nullable = false)
     private String posOrderContent; // 주문 내용
 
     @Setter

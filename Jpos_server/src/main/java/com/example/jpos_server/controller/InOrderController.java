@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -65,7 +64,7 @@ public class InOrderController {
     @PostMapping("/order/end")
     public String endOrder(@RequestBody @Valid PosOrderDto posOrderDto){
 
-        return "주문 완료";
+        return "계산 완료";
     }
 
 }
