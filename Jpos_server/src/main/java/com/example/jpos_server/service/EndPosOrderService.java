@@ -14,8 +14,5 @@ public class EndPosOrderService {
     private final EndPosOrderRepository endPosOrderRepository;
     private final StoreService storeService;
 
-    public void makeEndPosOrderByPosOrder(PosOrderDto posOrderDto){
-        EndPosOrder endPosOrder = new EndPosOrder();
-        endPosOrder.setStore(storeService.searchStore(posOrderDto.storeId()));
-    }
+
 }
