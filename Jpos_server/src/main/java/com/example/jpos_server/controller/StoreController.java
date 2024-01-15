@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class StoreController {
 
-    private final StoreRepository storeRepository;
     private final StoreService storeService;
     private final SeatService seatService;
 
