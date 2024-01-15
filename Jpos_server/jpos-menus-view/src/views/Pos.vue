@@ -5,11 +5,11 @@
                 <div class="card" @click="inOrder(seat.id)" style="height: 200px;">
                     <div class="p-3 mx-4 text-bolder card-header card-text">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-8">
                                 {{ seat.seatName }}
                             </div>
-                            <div class="col-6">
-                                <p class="float-end">{{ seat.orderTime }}</p>
+                            <div class="col-4">
+                                {{ seat.orderTime }}
                             </div>
                         </div>
                     </div>
@@ -26,8 +26,7 @@
 <script>
 import AuthorsTable from "./components/AuthorsTable.vue";
 import ProjectsTable from "./components/ProjectsTable.vue";
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
+import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 import router from "@/router";
 
 export default {
@@ -45,25 +44,19 @@ export default {
         }
     },
     methods: {
-        stompCreate() {
-            const serverURL = "http://116.123.197.103:8080/ws/pos";
-            let socket = new SockJS(serverURL);
-            this.stompClient = Stomp.over(socket);
+        connectEmitter() {
             const user = JSON.parse(localStorage.getItem("accessToken"));
-            const token = 'Bearer ' + user?.token;
-            const headers = {
-                'Authorization' : token
-            }
-            this.stompClient.connect(
-                headers,
-                () => {
-                    this.connected = true;
-                    this.get();
-                    this.stompClient.subscribe("/send/" + this.$store.state.storeLoginId, res => {
-                        this.get();
-                    });
+            const token = user?.token;
+            const EventSource = EventSourcePolyfill || NativeEventSource;
+            const eventSource = new EventSource('http://116.123.197.103:8080/jpos/pos/sub/' + this.$store.state.storeLoginId, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
                 },
-            )
+                withCredentials: true,
+            });
+            eventSource.addEventListener('pos', event => {
+               this.get();
+            });
         },
         get() {
             this.axios.get("/jpos/pos/" + this.$store.state.storeLoginId).then(res => {
@@ -76,7 +69,7 @@ export default {
                     for (let j = 0; j < this.posOrders.length; j++) {
                         if (this.seats.at(i).id === this.posOrders.at(j).seatId) {
                             this.seats.at(i).orderPrice = this.posOrders.at(j).posOrderPrice;
-                            if(this.posOrders.at(j).createdDate !== null){
+                            if (this.posOrders.at(j).createdDate !== null) {
                                 this.seats.at(i).orderTime = this.posOrders.at(j).createdDate.at(3) + " : " + this.posOrders.at(j).createdDate.at(4);
                             }
                             for (let k = 0; k < (this.posOrders.at(j).posOrderContent || '').split("/").length; k++) {
@@ -103,8 +96,8 @@ export default {
         },
     },
     mounted() {
-        this.stompCreate();
-    }
+        this.connectEmitter();
+    },
 };
 </script>
 <style>

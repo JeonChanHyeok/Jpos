@@ -97,8 +97,7 @@ import VsudButton from "@/components/VsudButton.vue";
 // Import Swiper styles
 import 'swiper/css';
 import router from "@/router";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+
 
 export default {
     name: 'Menus',
@@ -125,19 +124,11 @@ export default {
     // 메소드 정의
     methods: {
         //포스기에서 자리 조작중엔 작동하면 안됨.
-        stompCreate() {
-            const serverURL = "http://116.123.197.103:8080/ws/qrOrder";
-            let socket = new SockJS(serverURL);
-            this.stompClient = Stomp.over(socket);
-            this.stompClient.connect(
-                {},
-                () => {
-                    this.get();
-                    this.stompClient.subscribe("/qrOrderOnOff/" + this.$route.params.seatName, res => {
-                        this.get();
-                    });
-                },
-            )
+        connectEmitter() {
+            const eventSource = new EventSource('http://116.123.197.103:8080/jpos/qrOrder/sub/' + this.$route.params.seatName)
+            eventSource.addEventListener('qrOrder', event => {
+                this.get();
+            });
         },
 
         // get 으로 데이터 파싱 /jpos/qr-order/가게id/좌석id 입력
@@ -146,6 +137,7 @@ export default {
                 this.storeName = res.data.storeName;
                 this.seatName = res.data.seatName;
                 if(res.data.posUsing === 1){
+                    this.orderModal = false;
                     this.posModal = true;
                 }else{
                     this.posModal = false;
@@ -275,8 +267,8 @@ export default {
 
     },
     // 화면 나올때 초기화 하는 부분
-    created() {
-        this.stompCreate();
+    mounted() {
+        this.connectEmitter();
     },
 }
 

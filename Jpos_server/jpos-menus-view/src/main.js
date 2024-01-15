@@ -29,7 +29,6 @@ app.config.globalProperties.$store = store;
 // 요청 인터셉터 추가
 axios.interceptors.request.use(
     function (config) {
-        debugger
         if (config.url !== "/jpos/user/login" && config.url !== "/jpos/user/signup") {
             const user = JSON.parse(localStorage.getItem("accessToken"));
             const token = user?.token;
@@ -59,7 +58,7 @@ axios.interceptors.response.use(
         // 응답 오류가 있는 작업 수행
         if (error.response && error.response.status) {
             switch (error.response.status) {
-                case 401:
+                case '401 Unauthorized':
                     alert("잘못된 접근입니다.")
                     router.push('/sign-in').catch(() => {});
                     break;

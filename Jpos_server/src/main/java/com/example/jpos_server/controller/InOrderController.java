@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,7 +27,6 @@ public class InOrderController {
     private final CategoryService categoryService;
     private final PosOrderService posOrderService;
     private final SeatService seatService;
-    private final SimpMessageSendingOperations sendingOperations;
 
 
     @GetMapping("/{storeId}/{seatId}")
@@ -42,7 +40,7 @@ public class InOrderController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
+        seatService.notify(seatId,"");
 
         return objectMapper.writeValueAsString(menuAndOrderResponse);
     }
@@ -50,8 +48,7 @@ public class InOrderController {
     @PatchMapping("/{seatId}")
     public void setPosUnUsing(@PathVariable Long seatId){
         seatService.setPosUsing(seatId, 0);
-        sendingOperations.convertAndSend("/qrOrderOnOff/" + seatId,"yeah");
-
+        seatService.notify(seatId,"");
     }
 
     @PostMapping("/order/add")
@@ -67,7 +64,7 @@ public class InOrderController {
     @PostMapping("/order/end")
     public String endOrder(@RequestBody @Valid PosOrderDto posOrderDto){
 
-        return "주문 완료";
+        return "계산 완료";
     }
 
 }
