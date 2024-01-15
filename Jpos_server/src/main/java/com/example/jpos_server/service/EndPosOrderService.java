@@ -13,14 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class EndPosOrderService {
     private final EndPosOrderRepository endPosOrderRepository;
     private final StoreService storeService;
-    private final
 
     public void makeEndPosOrderByPosOrder(PosOrderDto posOrderDto){
         EndPosOrder endPosOrder = new EndPosOrder();
         endPosOrder.setStore(storeService.searchStore(posOrderDto.storeId()));
-        endPosOrder.setSeatName(posOrderDto.seatId());
-
     }
-
-
 }
