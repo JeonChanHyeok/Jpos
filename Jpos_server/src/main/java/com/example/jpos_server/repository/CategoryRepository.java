@@ -10,5 +10,5 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<CategoryDto> findByStore(Store store);
+    List<CategoryDto.CategoryDtoOfIdAndCategoryName> findIdAndCategoryNameByStoreId(Long storeId);
 }

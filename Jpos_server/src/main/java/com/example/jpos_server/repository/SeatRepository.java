@@ -10,5 +10,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface SeatRepository extends JpaRepository<Seat, Long> {
-    List<SeatDto> findByStore(Store store);
+    List<SeatDto.SeatDtoOfIdAndSeatName> findIdAndSeatNameByStoreId(Long storeId);
+    SeatDto.SeatDtoOfSeatNameAndPosUsing findSeatNameAndPosUsingById(Long id);
 }

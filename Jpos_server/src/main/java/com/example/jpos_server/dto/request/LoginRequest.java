@@ -1,4 +1,4 @@
-package com.example.jpos_server.domain.request;
+package com.example.jpos_server.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Objects;
+
 @Getter
 @ToString
 @Entity
@@ -31,17 +33,10 @@ public class PosOrder extends BaseTimeEntity{
     private Store store; // 주문 가게
 
     @Setter
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Seat seat; // 주문 자리
 
-
-    public PosOrder(String posOrderContent, int posOrderPrice, Store store, Seat seat) {
-        this.posOrderContent = posOrderContent;
-        this.posOrderPrice = posOrderPrice;
-        this.store = store;
-        this.seat = seat;
-    }
 
     public PosOrder() {
     }
@@ -53,5 +48,9 @@ public class PosOrder extends BaseTimeEntity{
         return id != null && id.equals(that.id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

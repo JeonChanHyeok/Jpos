@@ -1,4 +1,4 @@
-package com.example.jpos_server.domain.response;
+package com.example.jpos_server.dto.response;
 
 import org.json.simple.JSONObject;
 

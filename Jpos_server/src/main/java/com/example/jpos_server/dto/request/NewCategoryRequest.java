@@ -1,9 +1,9 @@
-package com.example.jpos_server.domain.request;
+package com.example.jpos_server.dto.request;
 
 import lombok.Getter;
 
 @Getter
-public class CategoryRequest {
+public class NewCategoryRequest {
     private String categoryName;
     private Long storeId;
 }

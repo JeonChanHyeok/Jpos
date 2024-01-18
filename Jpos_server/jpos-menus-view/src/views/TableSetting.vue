@@ -59,7 +59,7 @@ export default {
         },
         get() {
             this.axios.get("/jpos/seatSetting/" + this.$store.state.storeLoginId).then(res => {
-                this.seats = JSON.parse(JSON.stringify(res.data.seatDtoList));
+                this.seats = JSON.parse(JSON.stringify(res.data));
             });
         },
         addSeat() {

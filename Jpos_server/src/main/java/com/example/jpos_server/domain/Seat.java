@@ -12,6 +12,7 @@ import java.util.Objects;
 @Getter
 @ToString
 @Entity
+@DynamicInsert
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +27,8 @@ public class Seat {
     private Store store; // 가게
 
     @Setter
-    @Column(nullable = false)
     @ColumnDefault("0")
-    private Integer posUsing; // 포스기에서 사용중인지 확인하는 변수 0:사용안함 1:사용중
+    private int posUsing; // 포스기에서 사용중인지 확인하는 변수 0:사용안함 1:사용중
 
     public Seat() {
     }

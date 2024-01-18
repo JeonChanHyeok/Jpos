@@ -126,6 +126,9 @@ export default {
         //포스기에서 자리 조작중엔 작동하면 안됨.
         connectEmitter() {
             const eventSource = new EventSource('http://116.123.197.103:8080/jpos/qrOrder/sub/' + this.$route.params.seatName)
+            eventSource.addEventListener('qrOrderStart', event => {
+
+            })
             eventSource.addEventListener('qrOrder', event => {
                 this.get();
             });
@@ -161,6 +164,7 @@ export default {
                     this.menus.at(i).modal = false;
                 }
                 this.posOrder = JSON.parse(JSON.stringify(res.data.posOrderDto));
+                alert(JSON.stringify(res.data.posOrderDto));
                 if (this.posOrder.id !== 0) {
                     for (let i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
                         for (var j = 0; j < this.menus.length; j++) {
@@ -195,8 +199,8 @@ export default {
                     id: this.posOrder.id,
                     posOrderContent: this.posOrder.posOrderContent,
                     posOrderPrice: this.posOrder.posOrderPrice,
-                    storeId: this.posOrder.storeId,
-                    seatId: this.posOrder.seatId,
+                    storeId: this.$route.params.storeName,
+                    seatId: this.$route.params.seatName,
                 }
                 this.axios.post("/jpos/qrOrder/order/add", JSON.stringify(orderData), {
                     headers: {
@@ -269,6 +273,7 @@ export default {
     // 화면 나올때 초기화 하는 부분
     mounted() {
         this.connectEmitter();
+        this.get();
     },
 }
 

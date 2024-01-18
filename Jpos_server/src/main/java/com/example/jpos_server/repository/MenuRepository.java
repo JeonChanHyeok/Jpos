@@ -10,5 +10,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface MenuRepository extends JpaRepository<Menu, Long>{
-    List<MenuDto> findByStore(Store store);
+    List<MenuDto.MenuDtoOfIdAndMenuNameAndPrice> findIdAndMenuNameAndPriceByStoreId(Long storeId);
+    List<MenuDto.MenuDtoOfIdAndMenuNameAndPriceAndCategoryId> findIdAndMenuNameAndPriceAndCategoryIdByStoreId(Long storeId);
 }
