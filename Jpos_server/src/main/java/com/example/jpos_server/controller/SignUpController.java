@@ -1,6 +1,6 @@
 package com.example.jpos_server.controller;
 
-import com.example.jpos_server.domain.request.SignUpRequest;
+import com.example.jpos_server.dto.request.SignUpRequest;
 import com.example.jpos_server.service.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

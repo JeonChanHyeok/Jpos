@@ -1,46 +1,34 @@
 package com.example.jpos_server.controller;
 
 
-import com.example.jpos_server.domain.response.MenuAndOrderResponse;
-import com.example.jpos_server.dto.PosOrderDto;
-import com.example.jpos_server.service.*;
+import com.example.jpos_server.dto.request.PosOrderRequest;
+import com.example.jpos_server.service.QrOrderService;
+import com.example.jpos_server.service.SSEService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Slf4j
 @RequestMapping("/jpos/qrOrder")
 @RestController
 @RequiredArgsConstructor
 public class QrOrderController {
-    private final SeatService seatService;
-    private final MenuService menuService;
-    private final CategoryService categoryService;
-    private final PosOrderService posOrderService;
-    private final StoreService storeService;
+    private final QrOrderService qrOrderService;
+    private final SSEService sseService;
 
     @GetMapping("/{storeId}/{seatId}")
     public String loadMenusAndOrder(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
 
-        if(seatService.correctSeat(storeId, seatId)){
-            MenuAndOrderResponse menuAndOrderResponse = new MenuAndOrderResponse();
-            menuAndOrderResponse.setStoreName(storeService.searchStore(storeId).getStoreName());
-            menuAndOrderResponse.setSeatName(seatService.searchSeat(seatId).seatName());
-            menuAndOrderResponse.setPosUsing(seatService.searchSeat(seatId).posUsing());
-            menuAndOrderResponse.setMenuDtoList(menuService.searchMenus(storeService.searchStore(storeId)));
-            menuAndOrderResponse.setCategoryDtoList(categoryService.searchCategories(storeService.searchStore(storeId)));
-            PosOrderDto posOrderDto = posOrderService.searchPosOrderBySeatId(seatId);
-            menuAndOrderResponse.setPosOrderDto(posOrderDto);
-
+        if(qrOrderService.correctSeat(storeId, seatId)){
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
-
-            return objectMapper.writeValueAsString(menuAndOrderResponse);
+            return objectMapper.writeValueAsString(qrOrderService.makeResponse(storeId, seatId));
         }else{
             return "잘못된 접근입니다.";
         }
@@ -48,18 +36,18 @@ public class QrOrderController {
 
     @GetMapping(value = "/sub/{seatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable Long seatId){
-        return seatService.subscribe(seatId);
+        return sseService.subscribe2(seatId);
     }
 
 
     @PostMapping("/order/add")
-    public String addOrder(@RequestBody @Valid PosOrderDto posOrderDto){
-        if(posOrderDto.id() == 0){
-            posOrderService.addPosOrder(posOrderDto);
+    public String addOrder(@RequestBody @Valid PosOrderRequest posOrderDto){
+        if(posOrderDto.getId() == 0){
+            qrOrderService.addPosOrder(posOrderDto);
         }else{
-            posOrderService.updatePosOrder(posOrderDto);
+            qrOrderService.updatePosOrder(posOrderDto);
         }
-        storeService.notify(posOrderDto.storeId(), "");
+        sseService.notify(posOrderDto.getStoreId(), "");
         return "주문 완료";
     }
 }

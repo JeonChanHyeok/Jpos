@@ -120,7 +120,7 @@
     <div class="container-fluid mt-4">
         <div class="row align-items-center">
             <div class="col-lg-4 col-sm-8">
-                {{ this.$store.state.storeName }} - {{ this.seatId }}
+                {{ this.$store.state.storeName }} - {{ this.seatName }}
             </div>
         </div>
         <div class="container-fluid">
@@ -223,12 +223,12 @@ export default {
         return {
             categories: [], // 카테고리들
             menus: [], // 메뉴들
-            posOrder: {},
+            posOrder: {}, // 주문
             orderModal: false,
             orderContentName: "",
-            orderPirce: 0,
             endOrderModal: false,
             seatId: history.state.seatId,
+            seatName: history.state.seatName,
         };
     },
     methods: {
@@ -297,9 +297,11 @@ export default {
         },
         orderModalOpen() {
             this.orderContentName = ""
+            this.posOrder.posOrderPrice = 0;
             for (let i = 0; i < this.menus.length; i++) {
                 if (this.menus.at(i).count !== 0) {
                     this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
+                    this.posOrder.posOrderPrice += this.menus.at(i).price *  this.menus.at(i).count;
                 }
             }
             this.orderModal = !this.orderModal;
@@ -320,8 +322,8 @@ export default {
                     id: this.posOrder.id,
                     posOrderContent: this.posOrder.posOrderContent,
                     posOrderPrice: this.posOrder.posOrderPrice,
-                    storeId: this.posOrder.storeId,
-                    seatId: this.posOrder.seatId,
+                    storeId: this.$store.state.storeLoginId,
+                    seatId: this.seatId,
                 }
                 this.axios.post("/jpos/inOrder/order/add", JSON.stringify(orderData), {
                     headers: {
@@ -359,8 +361,8 @@ export default {
                     id: this.posOrder.id,
                     posOrderContent: this.posOrder.posOrderContent,
                     posOrderPrice: this.posOrder.posOrderPrice,
-                    storeId: this.posOrder.storeId,
-                    seatId: this.posOrder.seatId,
+                    storeId: this.$store.state.storeLoginId,
+                    seatId: this.seatId,
                 }
                 this.axios.post("/jpos/inOrder/order/end", JSON.stringify(orderData), {
                     headers: {

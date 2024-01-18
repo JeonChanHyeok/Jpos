@@ -21,15 +21,14 @@ export default {
     },
     data(){
         return {
-            storeId: null,
+            storeId: this.$store.state.storeLoginId,
             seats:[],
         }
     },
     methods: {
         get(){
-            this.axios.get("/jpos/store/qr/" + this.$store.state.storeLoginId).then(res => {
-                this.storeId = res.data.storeId;
-                this.seats = JSON.parse(JSON.stringify(res.data.seatDtoList));
+            this.axios.get("/jpos/qrCode/" + this.storeId).then(res => {
+                this.seats = JSON.parse(JSON.stringify(res.data));
             });
         }
     },

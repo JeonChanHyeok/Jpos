@@ -2,13 +2,13 @@
     <div class="container-fluid pt-3">
         <div class="row mt-1 row-cols-6" style="height: max-content">
             <div v-for="(seat) in seats" class="col mb-2 mt-2">
-                <div class="card" @click="inOrder(seat.id)" style="height: 200px;">
+                <div class="card" @click="inOrder(seat.id, seat.seatName)" style="height: 200px;">
                     <div class="p-3 mx-4 text-bolder card-header card-text">
                         <div class="row">
-                            <div class="col-8">
+                            <div class="col-7">
                                 {{ seat.seatName }}
                             </div>
-                            <div class="col-4">
+                            <div class="col-5">
                                 {{ seat.orderTime }}
                             </div>
                         </div>
@@ -54,15 +54,17 @@ export default {
                 },
                 withCredentials: true,
             });
+            eventSource.addEventListener('posStart', evt => {
+            });
             eventSource.addEventListener('pos', event => {
                this.get();
             });
         },
         get() {
             this.axios.get("/jpos/pos/" + this.$store.state.storeLoginId).then(res => {
-                this.seats = JSON.parse(JSON.stringify(res.data.seatDtoList));
-                this.posOrders = JSON.parse(JSON.stringify(res.data.posOrderDtoLost));
-                this.menus = JSON.parse(JSON.stringify(res.data.menuDtoList));
+                this.seats = JSON.parse(JSON.stringify(res.data.seatResponseList));
+                this.posOrders = JSON.parse(JSON.stringify(res.data.posOrderResponseList));
+                this.menus = JSON.parse(JSON.stringify(res.data.menuResponseList));
 
                 for (let i = 0; i < this.seats.length; i++) {
                     this.seats.at(i).orderContent = "";
@@ -85,18 +87,20 @@ export default {
                 }
             })
         },
-        inOrder(id) {
+        inOrder(id, name) {
             alert(id);
             router.push({
                 name: 'InOrder',
                 state: {
                     seatId: id,
+                    seatName: name,
                 }
             });
         },
     },
     mounted() {
         this.connectEmitter();
+        this.get();
     },
 };
 </script>

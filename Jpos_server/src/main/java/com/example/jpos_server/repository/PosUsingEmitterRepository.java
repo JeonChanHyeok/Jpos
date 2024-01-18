@@ -9,8 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 @RequiredArgsConstructor
-public class StoreEmitterRepository {
-
+public class PosUsingEmitterRepository {
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public void save(Long id, SseEmitter emitter) {

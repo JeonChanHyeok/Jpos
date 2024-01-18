@@ -1,4 +1,4 @@
-package com.example.jpos_server.domain.request;
+package com.example.jpos_server.dto.request;
 
 import com.example.jpos_server.domain.User.Role;
 import lombok.Getter;

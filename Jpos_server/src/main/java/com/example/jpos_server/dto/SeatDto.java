@@ -1,23 +1,7 @@
 package com.example.jpos_server.dto;
 
-import com.example.jpos_server.domain.Seat;
-
-import java.io.Serializable;
-
-/**
- * DTO for {@link com.example.jpos_server.domain.Seat}
- */
-public record SeatDto(Long id, String seatName, int posUsing){
-
-    public static SeatDto of(Long id, String seatName, int posUsing){
-        return new SeatDto(id, seatName, posUsing);
+public class SeatDto {
+    public record SeatDtoOfIdAndSeatName(Long id, String seatName) {
     }
-
-    public static SeatDto from(Seat seat){
-        return new SeatDto(
-                seat.getId(),
-                seat.getSeatName(),
-                seat.getPosUsing()
-        );
-    }
+    public record SeatDtoOfSeatNameAndPosUsing(String seatName, int posUsing){}
 }

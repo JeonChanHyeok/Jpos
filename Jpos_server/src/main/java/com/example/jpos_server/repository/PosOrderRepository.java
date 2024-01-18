@@ -10,6 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PosOrderRepository extends JpaRepository<PosOrder, Long> {
-    Optional<PosOrderDto> findBySeat(Seat seat);
-    List<PosOrderDto> findByStore(Store store);
+    List<PosOrderDto.PosOrderDtoOfSeatIdAndPosOrderPriceAndPosOrderContentAndCreatedDate> findSeatIdAndPosOrderPriceAndPosOrPosOrderContentAndCreatedDateByStoreId(Long storeId);
+    Optional<PosOrderDto.PosOrderDtoOfIdAndPosOrderContentAndPosOrderPrice> findIdAndPosOrderContentAndPosOrderPriceBySeatId(Long seatId);
 }

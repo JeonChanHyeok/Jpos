@@ -2,9 +2,8 @@ package com.example.jpos_server.controller;
 
 import com.example.jpos_server.config.security.UserAccountDetails;
 import com.example.jpos_server.config.security.jwt.JwtUtils;
-import com.example.jpos_server.domain.request.LoginRequest;
-import com.example.jpos_server.domain.response.JwtResponse;
-import com.example.jpos_server.service.StoreService;
+import com.example.jpos_server.dto.request.LoginRequest;
+import com.example.jpos_server.dto.response.JwtResponse;
 import com.example.jpos_server.service.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
