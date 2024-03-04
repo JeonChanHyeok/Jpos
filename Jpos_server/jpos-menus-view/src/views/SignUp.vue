@@ -59,7 +59,7 @@
                             <p class="text-sm mt-3 mb-0">
                                 Already have an account
                                 <a
-                                        href="javascript:;"
+                                        href="/sign-in"
                                         class="text-dark font-weight-bolder"
                                 >Sign in</a>
                             </p>
@@ -73,8 +73,7 @@
 </template>
 
 <script>
-import Navbar from "@/examples/PageLayout/Navbar.vue";
-import AppFooter from "@/examples/PageLayout/Footer.vue";
+import AppFooter from "@/examples/Footer.vue";
 import VsudInput from "@/components/VsudInput.vue";
 import VsudCheckbox from "@/components/VsudCheckbox.vue";
 import VsudButton from "@/components/VsudButton.vue";
@@ -84,7 +83,6 @@ import router from "@/router";
 export default {
     name: "SignUp",
     components: {
-        Navbar,
         AppFooter,
         VsudInput,
         VsudCheckbox,
@@ -127,12 +125,8 @@ export default {
                         "Content-Type": "application/json"
                     },
                 }).then((res) => {
-                    if(res.data.errorCode === 400){
-                        alert("중복된 아이디입니다.");
-                    }else{
-                        alert("가입 완료");
-                        router.push('/sign-in')
-                    }
+                    alert("가입 완료");
+                    router.push('/sign-in')
                 });
             } catch (error) {
                 console.error(error);

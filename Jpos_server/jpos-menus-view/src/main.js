@@ -57,14 +57,7 @@ axios.interceptors.response.use(
         // 2xx 외의 범위에 있는 상태 코드는 이 함수를 트리거
         // 응답 오류가 있는 작업 수행
         if (error.response && error.response.status) {
-            switch (error.response.status) {
-                case '401 Unauthorized':
-                    alert("잘못된 접근입니다.")
-                    router.push('/sign-in').catch(() => {});
-                    break;
-                default:
-                    return Promise.reject(error);
-            }
+            if(error.response.status >= 460) alert(error.response.data.message);
         }
         return Promise.reject(error);
     },

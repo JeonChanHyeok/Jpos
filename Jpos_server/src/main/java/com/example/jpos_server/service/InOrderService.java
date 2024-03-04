@@ -1,5 +1,6 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.domain.EndPosOrder;
 import com.example.jpos_server.domain.PosOrder;
 import com.example.jpos_server.domain.Seat;
 import com.example.jpos_server.dto.PosOrderDto;
@@ -19,6 +20,7 @@ public class InOrderService {
     private final MenuRepository menuRepository;
     private final CategoryRepository categoryRepository;
     private final StoreRepository storeRepository;
+    private final EndPosOrderRepository endPosOrderRepository;
 
     @Transactional
     public void setPosUsing(Long seatId, int posUsing){
@@ -35,6 +37,7 @@ public class InOrderService {
         return inOrderResponse;
     }
 
+    @Transactional
     public void addPosOrder(PosOrderRequest posOrderDto) {
         PosOrder posOrder = new PosOrder();
         posOrder.setPosOrderContent(posOrderDto.getPosOrderContent());
@@ -50,7 +53,23 @@ public class InOrderService {
         posOrder.setPosOrderContent(posOrderDto.getPosOrderContent());
         posOrder.setPosOrderPrice(posOrderDto.getPosOrderPrice());
     }
+    @Transactional
+    public void endOrder(PosOrderRequest posOrderDto) {
+        EndPosOrder endPosOrder = new EndPosOrder();
+        endPosOrder.setStore(storeRepository.findById(posOrderDto.getStoreId()).get());
+        endPosOrder.setSeatName(seatRepository.findById(posOrderDto.getSeatId()).get().getSeatName());
+        endPosOrder.setPosOrderPrice(posOrderDto.getPosOrderPrice());
+        endPosOrder.setPosOrderContent(posOrderDto.getPosOrderContent().replace("<br/>", ", "));
+        endPosOrderRepository.save(endPosOrder);
+        if(posOrderDto.getId() != 0){
+            posOrderRepository.deleteById(posOrderDto.getId());
+        }
+    }
 
+    @Transactional
+    public void deleteOrder(Long orderId){
+        posOrderRepository.deleteById(orderId);
+    }
 
 
 }

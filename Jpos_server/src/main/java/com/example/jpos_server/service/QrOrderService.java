@@ -1,5 +1,7 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.config.error.ErrorCode;
+import com.example.jpos_server.config.error.exceptions.SeatNotExistInStoreException;
 import com.example.jpos_server.domain.PosOrder;
 import com.example.jpos_server.dto.PosOrderDto;
 import com.example.jpos_server.dto.SeatDto;
@@ -27,7 +29,7 @@ public class QrOrderService {
         if (seatRepository.existsById(seatId)){
             return seatRepository.findById(seatId).get().getStore().getId().equals(storeId);
         }else{
-            return false;
+            throw new SeatNotExistInStoreException("잘못된 주소", ErrorCode.SEAT_NOT_EXIST_IN_STORE);
         }
     }
 

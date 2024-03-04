@@ -17,8 +17,6 @@
 </template>
 <script>
 import Sidenav from "../examples/Sidenav/index.vue";
-import Configurator from "@/examples/Configurator.vue";
-import Navbar from "@/examples/Navbars/Navbar.vue";
 import AppFooter from "@/examples/Footer.vue";
 import {mapMutations} from "vuex";
 
@@ -26,21 +24,10 @@ export default {
     name: "main",
     components: {
         Sidenav,
-        Configurator,
-        Navbar,
         AppFooter,
     },
 
     computed: {
-        navClasses() {
-            return {
-                "position-sticky blur shadow-blur mt-4 left-auto top-1 z-index-sticky":
-                this.$store.state.isNavFixed,
-                "position-absolute px-4 mx-0 w-100 z-index-2":
-                this.$store.state.isAbsolute,
-                "px-0 mx-4 mt-4": !this.$store.state.isAbsolute,
-            };
-        },
     },
     beforeMount() {
         this.$store.state.isTransparent = "bg-transparent";

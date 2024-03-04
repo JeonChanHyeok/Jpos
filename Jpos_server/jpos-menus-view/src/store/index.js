@@ -17,8 +17,8 @@ export default createStore({
         showFooter: true,
         showMain: true,
         isLogined: false,
-        storeLoginId: null,
-        storeName: "",
+        storeLoginId: null, // 가게 id
+        storeName: "", // 가게 이름
     },
     plugins: [
         createPersistedState({

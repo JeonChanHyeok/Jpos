@@ -267,7 +267,6 @@ export default {
         },
         setPosUsing() {
             this.axios.patch("/jpos/inOrder/" + this.seatId).then(res => {
-
             });
         },
         countModalOff(menuIndex) {
@@ -307,9 +306,16 @@ export default {
             this.orderModal = !this.orderModal;
         },
         postOrder() {
-            if (this.orderContentName === "") {
+            if (this.orderContentName === "" && this.posOrder.id === 0) {
                 alert("주문을 추가해 주세요.")
                 this.orderModalOpen()
+            } else if(this.orderContentName === "" && this.posOrder.id !== 0){
+                if (confirm("주문을 취소 하시겠습니까?") === true) {
+                    this.axios.delete("/jpos/inOrder/order/delete/" + this.posOrder.id).then(res => {
+                        this.goPos();
+                    })
+                } else {
+                }
             } else {
                 this.posOrder.posOrderContent = "";
                 for (let i = 0; i < this.menus.length; i++) {
@@ -330,7 +336,6 @@ export default {
                         "Content-Type": "application/json"
                     },
                 }).then((res) => {
-                    alert(res.data);
                     this.goPos();
                 });
                 this.orderModalOpen();
@@ -341,6 +346,7 @@ export default {
             for (let i = 0; i < this.menus.length; i++) {
                 if (this.menus.at(i).count !== 0) {
                     this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
+                    this.posOrder.posOrderPrice += (this.menus.at(i).price * this.menus.at(i).count);
                 }
             }
             this.endOrderModal = !this.endOrderModal;
@@ -350,16 +356,9 @@ export default {
                 alert("결제 내용이 없습니다.")
                 this.orderModalOpen()
             } else {
-                this.posOrder.posOrderContent = "";
-                for (let i = 0; i < this.menus.length; i++) {
-                    if (this.menus.at(i).count !== 0) {
-                        this.posOrder.posOrderContent += this.menus.at(i).id + "," + this.menus.at(i).count + "/";
-                    }
-                }
-
                 const orderData = {
                     id: this.posOrder.id,
-                    posOrderContent: this.posOrder.posOrderContent,
+                    posOrderContent: this.orderContentName,
                     posOrderPrice: this.posOrder.posOrderPrice,
                     storeId: this.$store.state.storeLoginId,
                     seatId: this.seatId,
@@ -369,7 +368,6 @@ export default {
                         "Content-Type": "application/json"
                     },
                 }).then((res) => {
-                    alert(res.data);
                     this.goPos();
                 });
                 this.orderModalOpen();
