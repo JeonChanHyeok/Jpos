@@ -164,7 +164,6 @@ export default {
                     this.menus.at(i).modal = false;
                 }
                 this.posOrder = JSON.parse(JSON.stringify(res.data.posOrderDto));
-                alert(JSON.stringify(res.data.posOrderDto));
                 if (this.posOrder.id !== 0) {
                     for (let i = 0; i < (this.posOrder.posOrderContent || '').split("/").length; i++) {
                         for (var j = 0; j < this.menus.length; j++) {

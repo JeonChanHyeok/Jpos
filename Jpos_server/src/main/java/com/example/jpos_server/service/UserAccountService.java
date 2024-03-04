@@ -1,10 +1,14 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.config.error.ErrorCode;
+import com.example.jpos_server.config.error.exceptions.LoginIdDuplicateException;
 import com.example.jpos_server.domain.Store;
+import com.example.jpos_server.domain.StoreInfo;
 import com.example.jpos_server.domain.User.Authority;
 import com.example.jpos_server.domain.User.UserAccount;
 import com.example.jpos_server.dto.request.SignUpRequest;
 import com.example.jpos_server.repository.AuthorityRepository;
+import com.example.jpos_server.repository.StoreInfoRepository;
 import com.example.jpos_server.repository.StoreRepository;
 import com.example.jpos_server.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +28,15 @@ public class UserAccountService {
     private final AuthorityRepository authorityRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final StoreRepository storeRepository;
+    private final StoreInfoRepository storeInfoRepository;
 
     @Transactional
-    public void signUpOwner(SignUpRequest request) throws Exception {
+    public void signUp(SignUpRequest request) throws Exception {
+
+        if(userAccountRepository.existsByLoginId(request.getLoginId())){
+            throw new LoginIdDuplicateException("아이디 중복", ErrorCode.LOGIN_ID_DUPLICATION);
+        }
+
 
         Set<Authority> roles = new HashSet<>();
         Authority authority = Authority.builder().name(request.getRole()).build();
@@ -35,7 +45,9 @@ public class UserAccountService {
 
         log.info("data = {}", request.getUserName());
         Store store = new Store(request.getStoreName(), request.getLatitude(), request.getLongitude());
+        StoreInfo storeInfo = new StoreInfo(store, "", "", "");
         storeRepository.save(store);
+        storeInfoRepository.save(storeInfo);
         userAccountRepository.save(UserAccount.builder()
                 .loginId(request.getLoginId())
                 .loginPw(passwordEncoder.encode(request.getLoginPw()))
@@ -43,8 +55,6 @@ public class UserAccountService {
                 .userName(request.getUserName())
                 .store(store)
                 .build());
-
-
     }
 
     @Transactional(readOnly = true)

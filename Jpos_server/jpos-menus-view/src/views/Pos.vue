@@ -88,7 +88,6 @@ export default {
             })
         },
         inOrder(id, name) {
-            alert(id);
             router.push({
                 name: 'InOrder',
                 state: {

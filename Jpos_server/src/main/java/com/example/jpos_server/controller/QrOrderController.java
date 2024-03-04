@@ -14,7 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Slf4j
+/**
+ * QrOrder 컨트롤러
+ * 손님이 자리의 Qr코드를 찍어 들어가는 주문 페이지
+ */
 @RequestMapping("/jpos/qrOrder")
 @RestController
 @RequiredArgsConstructor
@@ -22,32 +25,51 @@ public class QrOrderController {
     private final QrOrderService qrOrderService;
     private final SSEService sseService;
 
+    /**
+     * QrOrder 화면을 구성하는데 필요한 정보 반환
+     * 가게 Id와 자리 Id 매칭이 안되면 SeatNotExistInStoreException 발생
+     *
+     * @param storeId - 가게 Id
+     * @param seatId  - 자리 Id
+     * @return
+     * @throws JsonProcessingException
+     */
     @GetMapping("/{storeId}/{seatId}")
     public String loadMenusAndOrder(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
 
-        if(qrOrderService.correctSeat(storeId, seatId)){
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.writeValueAsString(qrOrderService.makeResponse(storeId, seatId));
-        }else{
-            return "잘못된 접근입니다.";
-        }
+        qrOrderService.correctSeat(storeId, seatId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper.writeValueAsString(qrOrderService.makeResponse(storeId, seatId));
     }
 
+    /**
+     * QrOrder 화면 잠금 알림을 위해 SSE구독
+     * 포스기에서 특정 자리의 주문 페이지에 접근하면 그 자리의 QrOrder 화면을 잠궈야함.
+     *
+     * @param seatId - 자리 Id
+     * @return SseEmitter - 구독 완료한 Sse
+     */
     @GetMapping(value = "/sub/{seatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@PathVariable Long seatId){
-        return sseService.subscribe2(seatId);
+    public SseEmitter subscribe(@PathVariable Long seatId) {
+        return sseService.subscribeForQrOrder(seatId);
     }
 
-
+    /**
+     * 주문 추가
+     * 주문을 추가 한 후 Pos 화면에 주문이 업데이트 됐으니 주문 목록을 새로 고침 하라고 알림
+     *
+     * @param posOrderDto - 주문Id(0이면 새 주문), 주문내용, 주문가격, 가게Id, 자리Id
+     * @return
+     */
     @PostMapping("/order/add")
-    public String addOrder(@RequestBody @Valid PosOrderRequest posOrderDto){
-        if(posOrderDto.getId() == 0){
+    public String addOrder(@RequestBody @Valid PosOrderRequest posOrderDto) {
+        if (posOrderDto.getId() == 0) {
             qrOrderService.addPosOrder(posOrderDto);
-        }else{
+        } else {
             qrOrderService.updatePosOrder(posOrderDto);
         }
-        sseService.notify(posOrderDto.getStoreId(), "");
+        sseService.notifyForPos(posOrderDto.getStoreId(), "");
         return "주문 완료";
     }
 }

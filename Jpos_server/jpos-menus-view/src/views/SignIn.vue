@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import Navbar from "@/examples/PageLayout/Navbar.vue";
-import AppFooter from "@/examples/PageLayout/Footer.vue";
+
+import AppFooter from "@/examples/Footer.vue";
 import VsudInput from "@/components/VsudInput.vue";
 import VsudSwitch from "@/components/VsudSwitch.vue";
 import VsudButton from "@/components/VsudButton.vue";
@@ -83,7 +83,6 @@ const body = document.getElementsByTagName("body")[0];
 export default {
     name: "SigninPage",
     components: {
-        Navbar,
         AppFooter,
         VsudInput,
         VsudSwitch,
@@ -108,23 +107,23 @@ export default {
         },
         loginSubmit() {
             try {
+                if(this.loginId === "" || this.loginPw === "") {
+                    alert("아이디와 비밀번호를 입력해 주세요.");
+                    return;
+                }
                 const loginData = {
                     loginId: this.loginId,
                     loginPw: this.loginPw,
                 }
+
                 this.axios.post("/jpos/user/login", JSON.stringify(loginData), {
                     headers: {
                         "Content-Type": "application/json"
                     },
                 }).then((res) => {
-                    if(res.data.status === 409){
-                        alert("로그인 오류");
-                    }else{
-                        localStorage.setItem("accessToken", JSON.stringify(res.data));
-                        this.$store.commit("login", res.data.storeId);
-                        alert("로그인 성공");
-                        router.push("/main/dashboard");
-                    }
+                    localStorage.setItem("accessToken", JSON.stringify(res.data));
+                    this.$store.commit("login", res.data.storeId);
+                    router.push("/main/dashboard");
                 });
             } catch (error) {
                 console.error(error);

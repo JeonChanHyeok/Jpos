@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 로그인 컨트롤러
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +35,14 @@ public class LoginController {
     private final UserAccountService userAccountService;
 
 
+    /**
+     * 로그인
+     * 로그인 정보와 로그인 정보를 바탕으로 생성된 jwt 토큰을 반환한다.
+     * 로그인 실패 시 BadCredentialException 발생 (없는 Id - 원래 UsernameNotFoundException 발생 시켜야 하지만 spring security가 보안을 위해 변경해줌, 틀린 비밀번호)
+     *
+     * @param loginRequest - 로그인 Id, 로그인 Pw
+     * @return 생성된 jwt 토큰, 로그인한 유저의 Id(식별번호), 로그인 Id, 이름, 권한, 식당
+     */
     @PostMapping("/jpos/user/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getLoginPw()));

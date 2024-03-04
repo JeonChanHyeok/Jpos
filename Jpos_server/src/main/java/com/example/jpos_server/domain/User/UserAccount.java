@@ -1,7 +1,6 @@
 package com.example.jpos_server.domain.User;
 
-import com.example.jpos_server.domain.BaseTimeEntity;
-import com.example.jpos_server.domain.Seat;
+
 import com.example.jpos_server.domain.Store;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,7 +29,6 @@ public class UserAccount {
     @Column(nullable = false)
     private String userName;
 
-    //권한 (점주, 점원) 으로 나눠질 예정이며 권한은 여러개 가질 수 있으므로 manytomany
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Authority> roles = new HashSet<>();

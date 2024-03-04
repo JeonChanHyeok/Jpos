@@ -6,5 +6,4 @@ import lombok.Getter;
 public class NewSeatRequest {
     Long storeId;
     String seatName;
-
 }

@@ -9,6 +9,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 
+/*
+* SSE서비스 클래스
+* 1. QR주문이 들어오면 포스기에 알려 주문 정보를 다시 요청하게 한다.
+* 2. 포스기에서 특정 자리에 들어가면 그 자리의 QR오더 사이트를 비활성화한다.
+* */
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -17,18 +23,18 @@ public class SSEService {
     private final PosUsingEmitterRepository posUsingEmitterRepository;
     private final PosEmitterRepository posEmitterRepository;
 
-    public SseEmitter subscribe(Long storeId){
-        SseEmitter emitter = createEmitter(storeId);
+    public SseEmitter subscribeForPos(Long storeId){
+        SseEmitter emitter = createEmitterForPos(storeId);
 
-        sendToClient(storeId, "EventStream Created. [userId=" + storeId + "]", 0);
+        sendToClientForPos(storeId, "EventStream Created. [userId=" + storeId + "]", 0);
         return emitter;
     }
 
-    public void notify(Long storeId, Object event) {
-        sendToClient(storeId, event, 1);
+    public void notifyForPos(Long storeId, Object event) {
+        sendToClientForPos(storeId, event, 1);
     }
 
-    private void sendToClient(Long storeId, Object data, int isStart) {
+    private void sendToClientForPos(Long storeId, Object data, int isStart) {
         SseEmitter emitter = posEmitterRepository.get(storeId);
         if (emitter != null) {
             try {
@@ -41,7 +47,7 @@ public class SSEService {
         }
     }
 
-    private SseEmitter createEmitter(Long storeId) {
+    private SseEmitter createEmitterForPos(Long storeId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         posEmitterRepository.save(storeId, emitter);
 
@@ -56,18 +62,18 @@ public class SSEService {
 
 
 
-    public SseEmitter subscribe2(Long seatId){
-        SseEmitter emitter = createEmitter(seatId);
+    public SseEmitter subscribeForQrOrder(Long seatId){
+        SseEmitter emitter = createEmitterForQrOrder(seatId);
 
-        sendToClient(seatId, "EventStream Created. [userId=" + seatId + "]", 0);
+        sendToClientForQrOrder(seatId, "EventStream Created. [userId=" + seatId + "]", 0);
         return emitter;
     }
 
-    public void notify2(Long seatId, Object event) {
-        sendToClient(seatId, event, 1);
+    public void notifyForQrOrder(Long seatId, Object event) {
+        sendToClientForQrOrder(seatId, event, 1);
     }
 
-    private void sendToClient2(Long seatId, Object data, int isStart) {
+    private void sendToClientForQrOrder(Long seatId, Object data, int isStart) {
         SseEmitter emitter = posUsingEmitterRepository.get(seatId);
         if (emitter != null) {
             try {
@@ -80,7 +86,7 @@ public class SSEService {
         }
     }
 
-    private SseEmitter createEmitter2(Long seatId) {
+    private SseEmitter createEmitterForQrOrder(Long seatId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         posUsingEmitterRepository.save(seatId, emitter);
 

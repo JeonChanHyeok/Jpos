@@ -1,236 +1,158 @@
 <template>
-  <div class="py-4 container-fluid">
-    <div class="row">
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.money.title"
-          :value="stats.money.value"
-          :percentage="stats.money.percentage"
-          :icon-class="stats.money.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.users.title"
-          :value="stats.users.value"
-          :percentage="stats.users.percentage"
-          :icon-class="stats.users.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <card
-          :title="stats.clients.title"
-          :value="stats.clients.value"
-          :percentage="stats.clients.percentage"
-          :icon-class="stats.clients.iconClass"
-          :icon-background="stats.iconBackground"
-          :percentage-color="stats.clients.percentageColor"
-          direction-reverse
-        ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0">
-        <card
-          :title="stats.sales.title"
-          :value="stats.sales.value"
-          :percentage="stats.sales.percentage"
-          :icon-class="stats.sales.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-7 mb-lg-0 mb-4">
-        <div class="card">
-          <div class="card-body p-3">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="d-flex flex-column h-100">
-                  <p class="mb-1 pt-2 text-bold">Built by developers</p>
-                  <h5 class="font-weight-bolder"></h5>
-                  <p class="mb-5">
-                    From colors, cards, typography to complex elements, you will
-                    find the full documentation.
-                  </p>
-                  <a
-                    class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto"
-                    href="javascript:;"
-                  >
-                    Read More
-                    <i
-                      class="fas fa-arrow-right text-sm ms-1"
-                      aria-hidden="true"
-                    ></i>
-                  </a>
-                </div>
-              </div>
-              <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
-                <div class="bg-gradient-success border-radius-lg h-100">
-                  <img
-                    src="../assets/img/shapes/waves-white.svg"
-                    class="position-absolute h-100 w-50 top-0 d-lg-block d-none"
-                    alt="waves"
-                  />
-                  <div
-                    class="position-relative d-flex align-items-center justify-content-center h-100"
-                  >
-                    <img
-                      class="w-100 position-relative z-index-2 pt-4"
-                      src="../assets/img/illustrations/rocket-white.png"
-                      alt="rocket"
-                    />
-                  </div>
-                </div>
-              </div>
+    <div class="py-4 container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <card
+                        :title="topCard.todayPrice.title"
+                        :value="topCard.todayPrice.value"
+                        :icon-class="topCard.todayPrice.iconClass"
+                        :icon-background="topCard.iconBackground"
+                        direction-reverse
+                ></card>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-5">
-        <div class="card h-100 p-3">
-          <div
-            class="overflow-hidden position-relative border-radius-lg bg-cover h-100"
-            style="
-              background-image: url('https://demos.creative-tim.com/soft-ui-dashboard/assets/img/ivancik.jpg');
-            "
-          >
-            <span class="mask bg-gradient-dark"></span>
-            <div
-              class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3"
-            >
-              <h5 class="text-white font-weight-bolder mb-4 pt-2">
-                Work with the rockets
-              </h5>
-              <p class="text-white">
-                Wealth creation is an evolutionarily recent positive-sum game.
-                It is all about who take the opportunity first.
-              </p>
-              <a
-                class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto"
-                href="javascript:;"
-              >
-                Read More
-                <i
-                  class="fas fa-arrow-right text-sm ms-1"
-                  aria-hidden="true"
-                ></i>
-              </a>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <card
+                        :title="topCard.todayCount.title"
+                        :value="topCard.todayCount.value"
+                        :percentage="topCard.todayCount.percentage"
+                        :icon-class="topCard.todayCount.iconClass"
+                        :icon-background="topCard.iconBackground"
+                        direction-reverse
+                ></card>
             </div>
-          </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <card
+                        :title="topCard.monthPrice.title"
+                        :value="topCard.monthPrice.value"
+                        :icon-class="topCard.monthPrice.iconClass"
+                        :icon-background="topCard.iconBackground"
+                        direction-reverse
+                ></card>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0">
+                <card
+                        :title="topCard.allPrice.title"
+                        :value="topCard.allPrice.value"
+                        :icon-class="topCard.allPrice.iconClass"
+                        :icon-background="topCard.iconBackground"
+                        direction-reverse
+                ></card>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="mt-4 row">
-      <div class="mb-4 col-lg-5 mb-lg-0">
-        <div class="card z-index-2">
-          <div class="p-3 card-body">
-            <!-- chart -->
-            <active-users-chart />
-          </div>
+        <div class="card h-auto">
+            <div class="card-header pb-0 p-3">
+                <div class="row d-flex align-items-center ">
+                    <h6 class="col-8">이전 주문 조회</h6>
+                    <div class="col-4 p-3 d-flex">
+                        <input type="date" v-model="startDate" min="2000-01-01" max="2099-12-31">
+                        <h6>　~　</h6>
+                        <input type="date" v-model="endDate" min="2000-01-01" max="2099-12-31">
+                        <vsud-button class="m-1" @click="this.getEndPosOrder();">조회</vsud-button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-3 pb-0 mb-0" style="overflow: scroll">
+                <div class="row">
+                    <div class="col-2 border text-center">
+                        날짜/시간/좌석
+                    </div>
+                    <div class="col-8 border text-center">
+                        주문 내용
+                    </div>
+                    <div class="col-2 border text-center">
+                        금액
+                    </div>
+                </div>
+                <div class="row" v-for="(order) in orderList">
+                    <div class="col-2 border text-center">
+                        {{ order.createdDate.at(0) }}-{{ order.createdDate.at(1) }}-{{
+                        order.createdDate.at(2)
+                        }}/ {{ order.createdDate.at(3) }}:{{ order.createdDate.at(4) }}/ {{ order.seatName }}
+                    </div>
+                    <div class="col-8 border text-center" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+                        {{ order.posOrderContent }}
+                    </div>
+                    <div class="col-2 border text-center">
+                        {{ order.posOrderPrice }}
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-7">
-        <!-- line chart -->
-        <div class="card z-index-2">
-          <gradient-line-chart />
-        </div>
-      </div>
     </div>
-    <div class="row my-4">
-      <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
-        <projects-card />
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <Orders-card />
-      </div>
-    </div>
-  </div>
 </template>
 <script>
 import Card from "@/examples/Cards/Card.vue";
-import ActiveUsersChart from "@/examples/Charts/ActiveUsersChart.vue";
-import GradientLineChart from "@/examples/Charts/GradientLineChart.vue";
-import OrdersCard from "./components/OrdersCard.vue";
-import ProjectsCard from "./components/ProjectsCard.vue";
-import US from "../assets/img/icons/flags/US.png";
-import DE from "../assets/img/icons/flags/DE.png";
-import GB from "../assets/img/icons/flags/GB.png";
-import BR from "../assets/img/icons/flags/BR.png";
+import VsudButton from "@/components/VsudButton.vue";
 
 export default {
-  name: "DashboardDefault",
-  components: {
-    Card,
-    ActiveUsersChart,
-    GradientLineChart,
-    ProjectsCard,
-    OrdersCard,
-  },
-  data() {
-    return {
-      stats: {
-        iconBackground: "bg-gradient-success",
-        money: {
-          title: "Today's Money",
-          value: "$53,000",
-          percentage: "+55%",
-          iconClass: "ni ni-money-coins",
+    name: "DashboardDefault",
+    components: {
+        VsudButton,
+        Card,
+    },
+    data() {
+        return {
+            startDate: "",
+            endDate: "",
+            topCard: {
+                iconBackground: "bg-gradient-success",
+                todayPrice: {
+                    title: "오늘의 매출",
+                    value: "",
+                    iconClass: "ni ni-money-coins",
+                },
+                todayCount: {
+                    title: "오늘 온 손님들",
+                    value: "",
+                    iconClass: "ni ni-world",
+                },
+                monthPrice: {
+                    title: "30일 매출",
+                    value: "",
+                    iconClass: "ni ni-paper-diploma",
+                },
+                allPrice: {
+                    title: "전체 매출",
+                    value: "",
+                    iconClass: "ni ni-cart",
+                },
+            },
+            orderList: [],
+        };
+    },
+    methods: {
+        getEndPosOrder() {
+            let start = new Date(this.startDate);
+            let end = new Date(this.endDate);
+            if(start > end){
+                alert("시간을 확인해 주십시오.");
+                return;
+            }
+            this.axios.get("/jpos/dashboard/find/" + this.$store.state.storeLoginId + "/" + this.startDate + "/" + this.endDate).then(res => {
+                this.orderList = res.data.endPosOrderDtoList;
+            });
         },
-        users: {
-          title: "Today's Users",
-          value: "2,300",
-          percentage: "+3%",
-          iconClass: "ni ni-world",
+        get() {
+            this.axios.get("/jpos/dashboard/" + this.$store.state.storeLoginId).then(res => {
+                this.topCard.todayPrice.value = JSON.parse(JSON.stringify(res.data.todayPrice));
+                this.topCard.todayCount.value = JSON.parse(JSON.stringify(res.data.todayCount));
+                this.topCard.monthPrice.value = JSON.parse(JSON.stringify(res.data.monthPrice));
+                this.topCard.allPrice.value = JSON.parse(JSON.stringify(res.data.allPrice));
+                this.startDate = res.data.storeCreatedDate.at(0) + "-" + this.plusZero(res.data.storeCreatedDate.at(1)) + "-" + this.plusZero(res.data.storeCreatedDate.at(2));
+                let today = new Date();
+                this.endDate = today.getFullYear() + "-" + this.plusZero(today.getMonth() + 1) + "-" + this.plusZero(today.getDate());
+            })
         },
-        clients: {
-          title: "New Clients",
-          value: "+3,462",
-          percentage: "-2%",
-          iconClass: "ni ni-paper-diploma",
-          percentageColor: "text-danger",
-        },
-        sales: {
-          title: "Sales",
-          value: "$103,430",
-          percentage: "+5%",
-          iconClass: "ni ni-cart",
-        },
-      },
-      sales: {
-        us: {
-          country: "United States",
-          sales: 2500,
-          value: "$230,900",
-          bounce: "29.9%",
-          flag: US,
-        },
-        germany: {
-          country: "Germany",
-          sales: "3.900",
-          value: "$440,000",
-          bounce: "40.22%",
-          flag: DE,
-        },
-        britain: {
-          country: "Great Britain",
-          sales: "1.400",
-          value: "$190,700",
-          bounce: "23.44%",
-          flag: GB,
-        },
-        brasil: {
-          country: "Brasil",
-          sales: "562",
-          value: "$143,960",
-          bounce: "32.14%",
-          flag: BR,
-        },
-      },
-    };
-  },
+        plusZero(date) {
+            if (date < 10) {
+                return "0" + date;
+            } else {
+                return date;
+            }
+        }
+    },
+    mounted() {
+        this.get();
+    }
 };
 </script>

@@ -53,8 +53,8 @@
                            placeholder="가격">
                 </div>
                 <div class="modal-footer">
-                    <vsud-button @click="updateMenu()">수정하기</vsud-button>
-                    <vsud-button @click="updateMenuModalOff(menu.index);">닫기</vsud-button>
+                    <vsud-button @click="updateMenu()" style="width:100%" class="text-center">수정하기</vsud-button>
+                    <vsud-button @click="updateMenuModalOff(menu.index);" style="width: 100%" class="text-center">닫기</vsud-button>
                 </div>
             </div>
         </div>

@@ -67,7 +67,29 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPointJwt))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth.
+                        requestMatchers(
+                                new AntPathRequestMatcher("/jpos/profile/signup"),
+                                new AntPathRequestMatcher("/jpos/profile/delete/**"),
+                                new AntPathRequestMatcher("/jpos/profile/storeInfo/update/**")
+                        ).hasAnyRole("OWNER")
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/jpos/menuSetting/menu/**"),
+                                new AntPathRequestMatcher("/jpos/menuSetting/category/**"),
+                                new AntPathRequestMatcher("/jpos/seatSetting/add"),
+                                new AntPathRequestMatcher("/jpos/seatSetting/delete/**")
+                        ).hasAnyRole("OWNER", "MANAGER")
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/main/**"),
+                                new AntPathRequestMatcher("/jpos/dashboard/**"),
+                                new AntPathRequestMatcher("/jpos/inOrder/**"),
+                                new AntPathRequestMatcher("/jpos/menuSetting/{storeId}"),
+                                new AntPathRequestMatcher("/jpos/pos/**"),
+                                new AntPathRequestMatcher("/jpos/profile/{loginId}"),
+                                new AntPathRequestMatcher("/jpos/qrCode/**"),
+                                new AntPathRequestMatcher("/jpos/seatSetting/{storeId}"),
+                                new AntPathRequestMatcher("/jpos/store/**")
+                        ).hasAnyRole("OWNER", "MANAGER", "CUSTOMER")
                         .requestMatchers(
                                 new AntPathRequestMatcher("/menus/**"),
                                 new AntPathRequestMatcher("/assets/**"),
@@ -78,14 +100,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/jpos/qrOrder/**"),
                                 new AntPathRequestMatcher("/jpos/user/login"),
                                 new AntPathRequestMatcher("/jpos/user/signup")
-                                ).permitAll()
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/jpos/**"),
-                                new AntPathRequestMatcher("/main/**"),
-                                new AntPathRequestMatcher("/"),
-                                new AntPathRequestMatcher("/**")
-                        ).hasRole("OWNER")
-                        .anyRequest().authenticated()
+                        ).permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -93,11 +108,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-
 
 
     @Bean
@@ -108,7 +121,7 @@ public class SecurityConfig {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*") // 안에 해당 주소를 넣어도 됨
                         .allowedHeaders("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS" , "PATCH")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")
                         .exposedHeaders("Authorization", "RefreshToken");
                 //.allowCredentials(true); // .allowedOriginPatterns("*") 이렇게 와일드 카드로 설정하면 이거 쓰면 에러남 ( 실행 조차  X )
             }
