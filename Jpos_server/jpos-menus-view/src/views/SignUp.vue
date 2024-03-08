@@ -43,14 +43,6 @@
                                 <input type="text" class="form-control" :class="getClasses('default', false)"
                                        aria-label="storeName" v-model="storeName" placeholder="StoreName"/>
                             </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" :class="getClasses('default', false)"
-                                       aria-label="storeLat" v-model="latitude" placeholder="Latitude"/>
-                            </div>
-                            <div class="mb-3">
-                                <input type="number" class="form-control" :class="getClasses('default', false)"
-                                       aria-label="storeLon" v-model="longitude" placeholder="Longitude"/>
-                            </div>
                             <div class="text-center">
                                 <vsud-button type="button" color="dark" full-width variant="gradient" class="my-4 mb-2"
                                              @click="signUp()">Sign up
@@ -116,8 +108,8 @@ export default {
                 userName: this.userName,
                 storeName: this.storeName,
                 role: "ROLE_OWNER",
-                latitude: this.latitude,
-                longitude: this.longitude
+                latitude: 0,
+                longitude: 0
             }
             try {
                 this.axios.post("/jpos/user/signup", JSON.stringify(user), {

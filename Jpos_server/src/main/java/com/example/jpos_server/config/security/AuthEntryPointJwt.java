@@ -25,11 +25,11 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
             final ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> responseMap = new HashMap<String, Object>();
             responseMap.put("message", "권한이 없습니다.");
-            responseMap.put("status", 463);
+            responseMap.put("status", 460);
 
             response.setCharacterEncoding("utf-8");
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(463);
+            response.setStatus(460);
 
             try (ServletOutputStream os = response.getOutputStream()) {
                 objectMapper.writeValue(os, responseMap);
