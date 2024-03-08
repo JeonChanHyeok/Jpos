@@ -1,7 +1,6 @@
 package com.example.jpos_server.config.error;
 
-import com.example.jpos_server.config.error.exceptions.LoginIdDuplicateException;
-import com.example.jpos_server.config.error.exceptions.SeatNotExistInStoreException;
+import com.example.jpos_server.config.error.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,4 +32,24 @@ public class ExceptionController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    //중복된 요청
+    @ExceptionHandler(DuplicatedRequestException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicatedRequestException(){
+        ErrorResponse response = new ErrorResponse(ErrorCode.DUPLICATED_REQUEST);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    //요청과 요청자 매칭 안됨.
+    @ExceptionHandler(NotMatchingUserAndRequestException.class)
+    public ResponseEntity<ErrorResponse> handleNotMatchingUserAndRequestException(){
+        ErrorResponse response = new ErrorResponse(ErrorCode.NOT_MATCH_USER_AND_REQUEST);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    //주문 검색 시작시간과 끝시간 오류
+    @ExceptionHandler(StartIsAfterEndException.class)
+    public ResponseEntity<ErrorResponse> handleStartIsAfterEndException(){
+        ErrorResponse response = new ErrorResponse(ErrorCode.START_IS_AFTER_END);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
 }

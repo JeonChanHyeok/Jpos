@@ -211,9 +211,11 @@ export default {
                 categoryName: this.newCategoryName,
                 storeId: this.$store.state.storeLoginId
             }
+            let idem =   this.$idem();
             this.axios.post("/jpos/menuSetting/category/add", JSON.stringify(newCategory), {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Idempotency-Key" : idem,
                 },
             }).then((res) => {
                 alert(res.data);
@@ -253,9 +255,11 @@ export default {
                     menuCategory: this.categories.at(this.newMenuCategory).id,
                     menuPrice: this.newMenuPrice
                 }
+                let idem =   this.$idem();
                 this.axios.post("/jpos/menuSetting/menu/add", JSON.stringify(newMenu),{
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Idempotency-Key" : idem,
                     },
                 }).then((res) => {
                     alert(res.data);

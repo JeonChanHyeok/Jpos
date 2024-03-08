@@ -1,6 +1,8 @@
 package com.example.jpos_server.controller;
 
 import com.example.jpos_server.dto.request.NewSeatRequest;
+import com.example.jpos_server.service.CheckService;
+import com.example.jpos_server.service.IdempotencyService;
 import com.example.jpos_server.service.SeatSettingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SeatSettingController {
     private final SeatSettingService seatSettingService;
+    private final CheckService checkService;
+    private final IdempotencyService idempotencyService;
 
     /**
      * 가게의 자리 정보 반환
@@ -27,10 +31,9 @@ public class SeatSettingController {
      * @throws JsonProcessingException
      */
     @GetMapping("/{storeId}")
-    public String loadSeats(@PathVariable Long storeId) throws JsonProcessingException {
-
+    public String loadSeats(@RequestHeader("Authorization") String token, @PathVariable Long storeId) throws JsonProcessingException {
+        checkService.checkValidUserForRequest(token, storeId, 0);
         ObjectMapper objectMapper = new ObjectMapper();
-
         return objectMapper.writeValueAsString(seatSettingService.makeResponse(storeId));
     }
 
@@ -41,7 +44,9 @@ public class SeatSettingController {
      * @return - "추가 완료"
      */
     @PostMapping("/add")
-    public String addSeat(@RequestBody @Valid NewSeatRequest addSeatRequest) {
+    public String addSeat(@RequestHeader("Authorization") String token, @RequestHeader("Idempotency-Key") String idempotencyKey, @RequestBody @Valid NewSeatRequest addSeatRequest) {
+        idempotencyService.checkDuplicatedRequest(idempotencyKey);
+        checkService.checkValidUserForRequest(token, addSeatRequest.getStoreId(), 0);
         seatSettingService.addSeat(addSeatRequest.getStoreId(), addSeatRequest.getSeatName());
         return "추가 완료";
     }
@@ -53,7 +58,8 @@ public class SeatSettingController {
      * @return - "삭제 완료"
      */
     @DeleteMapping("/delete/{seatId}")
-    public String deleteSeat(@PathVariable Long seatId) {
+    public String deleteSeat(@RequestHeader("Authorization") String token, @PathVariable Long seatId) {
+        checkService.checkValidUserForRequest(token, seatId, 1);
         seatSettingService.deleteSeat(seatId);
         return "삭제 완료";
     }

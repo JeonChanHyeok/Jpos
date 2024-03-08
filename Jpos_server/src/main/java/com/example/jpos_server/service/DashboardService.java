@@ -1,5 +1,8 @@
 package com.example.jpos_server.service;
 
+import com.example.jpos_server.config.error.ErrorCode;
+import com.example.jpos_server.config.error.exceptions.SeatNotExistInStoreException;
+import com.example.jpos_server.config.error.exceptions.StartIsAfterEndException;
 import com.example.jpos_server.dto.EndPosOrderDto;
 import com.example.jpos_server.dto.response.DashboardEncPosOrderResponse;
 import com.example.jpos_server.dto.response.DashboardPriceDataResponse;
@@ -53,6 +56,9 @@ public class DashboardService {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime start = LocalDateTime.of(LocalDate.parse(startDate, format), LocalTime.of(0,0,0));
         LocalDateTime end = LocalDateTime.of(LocalDate.parse(endDate, format), LocalTime.of(23,59,59));
+        if(start.isAfter(end)){
+            throw new StartIsAfterEndException("검색 기간 오류", ErrorCode.START_IS_AFTER_END);
+        }
         dashboardEncPosOrderResponse.setEndPosOrderDtoList(endPosOrderRepository.findCreatedDateAndPosOrderContentAndPosOrderPriceAndSeatNameByStoreIdAndCreatedDateBetween(storeId,start,end));
         return dashboardEncPosOrderResponse;
     }

@@ -21,38 +21,39 @@ public class MenuSettingService {
     private final MenuRepository menuRepository;
     private final CategoryRepository categoryRepository;
 
-    public MenuSettingResponse makeResponse(Long storeId){
+    public MenuSettingResponse makeResponse(Long storeId) {
         MenuSettingResponse menuSettingResponse = new MenuSettingResponse();
         menuSettingResponse.setMenuDtoList(menuRepository.findIdAndMenuNameAndPriceAndCategoryIdByStoreId(storeId));
         menuSettingResponse.setCategoryDtoList(categoryRepository.findIdAndCategoryNameByStoreId(storeId));
         return menuSettingResponse;
     }
 
-    public void addMenu(NewMenuRequest newMenuRequest){
+    public void addMenu(NewMenuRequest newMenuRequest) {
         Menu newMenu = new Menu(newMenuRequest.getMenuName(), storeRepository.findById(newMenuRequest.getStoreId()).get(), categoryRepository.findById(newMenuRequest.getMenuCategory()).get(), newMenuRequest.getMenuPrice());
         menuRepository.save(newMenu);
     }
 
-    public void deleteMenu(Long menuId){
+    public void deleteMenu(Long menuId) {
         menuRepository.deleteById(menuId);
     }
 
     @Transactional
-    public void updateMenu(Long menuId, UpdateMenuRequest updateMenuRequest){
+    public void updateMenu(Long menuId, UpdateMenuRequest updateMenuRequest) {
         Menu menu = menuRepository.findById(menuId).get();
         menu.setMenuName(updateMenuRequest.getMenuName());
         menu.setCategory(categoryRepository.findById(updateMenuRequest.getMenuCategory()).get());
         menu.setPrice(updateMenuRequest.getMenuPrice());
     }
 
-    public void addCategory(NewCategoryRequest categoryRequest){
+    public void addCategory(NewCategoryRequest categoryRequest) {
+
         Category category = new Category();
         category.setCategoryName(categoryRequest.getCategoryName());
         category.setStore(storeRepository.findById(categoryRequest.getStoreId()).get());
         categoryRepository.save(category);
     }
 
-    public void deleteCategory(Long categoryId){
+    public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 

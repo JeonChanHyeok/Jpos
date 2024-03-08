@@ -2,6 +2,8 @@ package com.example.jpos_server.controller;
 
 
 import com.example.jpos_server.dto.request.PosOrderRequest;
+import com.example.jpos_server.service.CheckService;
+import com.example.jpos_server.service.IdempotencyService;
 import com.example.jpos_server.service.InOrderService;
 import com.example.jpos_server.service.SSEService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,22 +23,26 @@ import org.springframework.web.bind.annotation.*;
 public class InOrderController {
     private final InOrderService inOrderService;
     private final SSEService sseService;
+    private final CheckService checkService;
+    private final IdempotencyService idempotencyService;
 
 
     /**
      * 포스기 주문 수정 화면에 필요한 데이터 반환
      * 포스기에서 주문을 수정 중엔 Qr 주문을 비활성화한 후 비활성화 한 사실을 Qr 주문 화면에 SSE를 통해 알림.
-     * 가게와 자리 Id 매칭이 안될 경우 예외 발생 예정
+     * 가게 Id와 자리 Id 매칭이 안되면 SeatNotExistInStoreException 발생
      *
      * @param storeId - 가게 Id
-     * @param seatId - 자리 Id
+     * @param seatId  - 자리 Id
      * @return 가게의 모든 메뉴 정보, 선택한 자리 정보
      * @throws JsonProcessingException - writeValueAsString 사용에 필요
      */
     @GetMapping("/{storeId}/{seatId}")
-    public String loadAllMenusAndCategories(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
+    public String loadAllMenusAndCategories(@RequestHeader("Authorization") String token, @PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
+        checkService.checkValidUserForRequest(token, storeId, 0);
+        checkService.checkCorrectSeat(storeId, seatId);
         inOrderService.setPosUsing(seatId, 1);
-        sseService.notifyForQrOrder(seatId,"");
+        sseService.notifyForQrOrder(seatId, "");
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -50,14 +56,14 @@ public class InOrderController {
      * @param seatId - 자리 Id
      */
     @PatchMapping("/{seatId}")
-    public void setPosUnUsing(@PathVariable Long seatId){
+    public void setPosUnUsing(@RequestHeader("Authorization") String token, @PathVariable Long seatId) {
+        checkService.checkValidUserForRequest(token, seatId, 1);
         inOrderService.setPosUsing(seatId, 0);
-        sseService.notifyForQrOrder(seatId,"");
+        sseService.notifyForQrOrder(seatId, "");
     }
 
     /**
      * 주문 수정 및 추가
-     * Post와 Put으로 나눠야 할지 고민중이다.
      * 클라이언트에서 새 주문일 경우 id에 0을 채워 보낸다.
      * 주문 id가 0인 주문 정보가 입력되면 새 주문을 등록한다.
      * 주문 id가 0이 아닌 주문 정보가 들어오면 id로 주문을 찾아 수정한다.
@@ -65,10 +71,12 @@ public class InOrderController {
      * @param posOrderDto - 주문 Id, 주문 내용, 주문 가격, 주문 가게 Id, 주문 자리 Id
      */
     @PostMapping("/order/add")
-    public void addOrder(@RequestBody @Valid PosOrderRequest posOrderDto){
-        if(posOrderDto.getId() == 0){
+    public void addOrder(@RequestHeader("Authorization") String token, @RequestHeader("Idempotency-Key") String idempotencyKey, @RequestBody @Valid PosOrderRequest posOrderDto) {
+        checkService.checkValidUserForRequest(token, posOrderDto.getStoreId(), 0);
+        if (posOrderDto.getId() == 0) {
+            idempotencyService.checkDuplicatedRequest(idempotencyKey);
             inOrderService.addPosOrder(posOrderDto);
-        }else{
+        } else {
             inOrderService.updatePosOrder(posOrderDto);
         }
     }
@@ -81,7 +89,9 @@ public class InOrderController {
      * @param posOrderDto - 주문 Id, 주문 내용, 주문 가격, 주문 가게 Id, 주문 자리 Id
      */
     @PostMapping("/order/end")
-    public void endOrder(@RequestBody @Valid PosOrderRequest posOrderDto){
+    public void endOrder(@RequestHeader("Authorization") String token, @RequestHeader("Idempotency-Key") String idempotencyKey, @RequestBody @Valid PosOrderRequest posOrderDto) {
+        idempotencyService.checkDuplicatedRequest(idempotencyKey);
+        checkService.checkValidUserForRequest(token, posOrderDto.getStoreId(), 0);
         inOrderService.endOrder(posOrderDto);
     }
 
@@ -92,7 +102,8 @@ public class InOrderController {
      * @param orderId - 주문 Id
      */
     @DeleteMapping("/order/delete/{orderId}")
-    public void deleteOrder(@PathVariable Long orderId){
+    public void deleteOrder(@RequestHeader("Authorization") String token, @PathVariable Long orderId) {
+        checkService.checkValidUserForRequest(token, orderId, 2);
         inOrderService.deleteOrder(orderId);
     }
 

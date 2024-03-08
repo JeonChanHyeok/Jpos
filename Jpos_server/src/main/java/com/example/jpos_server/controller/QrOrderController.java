@@ -2,6 +2,7 @@ package com.example.jpos_server.controller;
 
 
 import com.example.jpos_server.dto.request.PosOrderRequest;
+import com.example.jpos_server.service.CheckService;
 import com.example.jpos_server.service.QrOrderService;
 import com.example.jpos_server.service.SSEService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Check;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class QrOrderController {
     private final QrOrderService qrOrderService;
     private final SSEService sseService;
+    private final CheckService checkService;
 
     /**
      * QrOrder 화면을 구성하는데 필요한 정보 반환
@@ -31,13 +34,12 @@ public class QrOrderController {
      *
      * @param storeId - 가게 Id
      * @param seatId  - 자리 Id
-     * @return
+     * @return QrOrder 화면을 구성하는데 필요한 정보 ( 가게이름, 자리이름, 카테고리목록, 메뉴목록)
      * @throws JsonProcessingException
      */
     @GetMapping("/{storeId}/{seatId}")
     public String loadMenusAndOrder(@PathVariable Long storeId, @PathVariable Long seatId) throws JsonProcessingException {
-
-        qrOrderService.correctSeat(storeId, seatId);
+        checkService.checkCorrectSeat(storeId, seatId);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(qrOrderService.makeResponse(storeId, seatId));
@@ -60,12 +62,12 @@ public class QrOrderController {
      * 주문을 추가 한 후 Pos 화면에 주문이 업데이트 됐으니 주문 목록을 새로 고침 하라고 알림
      *
      * @param posOrderDto - 주문Id(0이면 새 주문), 주문내용, 주문가격, 가게Id, 자리Id
-     * @return
+     * @return "주문 완료"
      */
     @PostMapping("/order/add")
-    public String addOrder(@RequestBody @Valid PosOrderRequest posOrderDto) {
+    public String addOrder(@RequestHeader("Idempotency-Key") String idempotencyKey, @RequestBody @Valid PosOrderRequest posOrderDto) {
         if (posOrderDto.getId() == 0) {
-            qrOrderService.addPosOrder(posOrderDto);
+            qrOrderService.addPosOrder(idempotencyKey, posOrderDto);
         } else {
             qrOrderService.updatePosOrder(posOrderDto);
         }

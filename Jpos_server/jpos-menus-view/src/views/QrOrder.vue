@@ -201,9 +201,11 @@ export default {
                     storeId: this.$route.params.storeName,
                     seatId: this.$route.params.seatName,
                 }
+                let idem = this.$idem();
                 this.axios.post("/jpos/qrOrder/order/add", JSON.stringify(orderData), {
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Idempotency-Key" : idem,
                     },
                 }).then((res) => {
                     alert(res.data);

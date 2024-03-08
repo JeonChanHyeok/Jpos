@@ -37,7 +37,6 @@ public class UserAccountService {
             throw new LoginIdDuplicateException("아이디 중복", ErrorCode.LOGIN_ID_DUPLICATION);
         }
 
-
         Set<Authority> roles = new HashSet<>();
         Authority authority = Authority.builder().name(request.getRole()).build();
         authorityRepository.save(authority);

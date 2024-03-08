@@ -331,9 +331,11 @@ export default {
                     storeId: this.$store.state.storeLoginId,
                     seatId: this.seatId,
                 }
+                let idem =   this.$idem();
                 this.axios.post("/jpos/inOrder/order/add", JSON.stringify(orderData), {
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Idempotency-Key" : idem,
                     },
                 }).then((res) => {
                     this.goPos();
@@ -342,7 +344,8 @@ export default {
             }
         },
         endOrderModalOpen() {
-            this.orderContentName = ""
+            this.orderContentName = "";
+            this.posOrder.posOrderPrice = 0;
             for (let i = 0; i < this.menus.length; i++) {
                 if (this.menus.at(i).count !== 0) {
                     this.orderContentName += this.menus.at(i).menuName + " " + this.menus.at(i).count + "개/ " + this.menus.at(i).price * this.menus.at(i).count + "원<br/>";
@@ -363,9 +366,11 @@ export default {
                     storeId: this.$store.state.storeLoginId,
                     seatId: this.seatId,
                 }
+                let idem =   this.$idem();
                 this.axios.post("/jpos/inOrder/order/end", JSON.stringify(orderData), {
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Idempotency-Key" : idem,
                     },
                 }).then((res) => {
                     this.goPos();
