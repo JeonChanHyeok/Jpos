@@ -35,3 +35,15 @@ jwt:
   secretKey: eed49feca6c39f970a2cb61eadabb6cc81448505fde4c6a7ae942a67dcd45015
   expiration: 86400000
 
+---
+
+spring:
+  config.activate.on-profile: heroku
+  datasource:
+    url: ${CLEARDB_DATABASE_URL}
+  jpa:
+    hibernate:
+      ddl-auto: create
+  sql:
+    init:
+      mode: always

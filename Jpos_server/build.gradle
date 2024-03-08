@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = 'v1.0'
 
 java {
 	sourceCompatibility = '17'
@@ -82,4 +82,11 @@ sourceSets {
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
 	delete file(generated)
+}
+
+//heroku 설정
+jar{
+	manifest{
+		attributes('Main-Class': 'com.example.jpos_server.JposServerApplication')
+	}
 }
