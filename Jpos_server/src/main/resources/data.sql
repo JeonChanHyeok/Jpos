@@ -1,4 +1,4 @@
-select * from jpos.end_pos_order;
+select * from jpos.idempotency_key;
 
 insert into store (store_name, latitude, longitude, created_date) values ('김치찌개집', 40.5235837, 19.8075358, '1998-01-11 15:00');
 

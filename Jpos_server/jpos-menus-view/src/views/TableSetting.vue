@@ -67,9 +67,11 @@ export default {
                 storeId: this.$store.state.storeLoginId,
                 seatName: this.newTableName,
             }
+            let idem = this.$idem();
             this.axios.post("/jpos/seatSetting/add", JSON.stringify(postData), {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Idempotency-Key" : idem,
                 },
             }).then(res => {
                 alert(res.data);

@@ -2,6 +2,7 @@ package com.example.jpos_server.controller;
 
 import com.example.jpos_server.dto.request.ProfileSignUpRequest;
 import com.example.jpos_server.dto.request.ProfileUpdateStoreInfoRequest;
+import com.example.jpos_server.service.CheckService;
 import com.example.jpos_server.service.ProfileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProfilePageController {
     private final ProfileService profileService;
+    private final CheckService checkService;
 
     /**
      * profile 화면에서 사용할 데이터 반환
@@ -29,10 +31,10 @@ public class ProfilePageController {
      * @throws JsonProcessingException - writeValueAsString 사용
      */
     @GetMapping("/{loginId}")
-    public String loadProfileData(@PathVariable String loginId) throws JsonProcessingException{
+    public String loadProfileData(@RequestHeader("Authorization") String token, @PathVariable String loginId) throws JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper.writeValueAsString(profileService.makeProfileResponse(loginId));
+        return objectMapper.writeValueAsString(profileService.makeProfileResponse(token, loginId));
     }
 
     /**
@@ -42,7 +44,8 @@ public class ProfilePageController {
      * @return - Ok
      */
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Valid ProfileSignUpRequest request) {
+    public ResponseEntity<?> signUp(@RequestHeader("Authorization") String token, @RequestBody @Valid ProfileSignUpRequest request) {
+        checkService.checkValidUserForRequest(token, request.getStoreId(), 0);
         profileService.signUp(request);
         return ResponseEntity.ok().build();
     }
@@ -54,8 +57,8 @@ public class ProfilePageController {
      * @return - "삭제 완료"
      */
     @DeleteMapping("/delete/{userId}")
-    public String deleteEmployee(@PathVariable String userId){
-        profileService.deleteEmployee(userId);
+    public String deleteEmployee(@RequestHeader("Authorization") String token, @PathVariable String userId){
+        profileService.deleteEmployee(token, userId);
         return "삭제 완료";
     }
 
@@ -67,7 +70,8 @@ public class ProfilePageController {
      * @return - "수정 완료"
      */
     @PatchMapping("/storeInfo/update/{storeId}")
-    public String updateStoreInfo(@PathVariable Long storeId, @RequestBody @Valid ProfileUpdateStoreInfoRequest profileUpdateStoreInfoRequest){
+    public String updateStoreInfo(@RequestHeader("Authorization") String token, @PathVariable Long storeId, @RequestBody @Valid ProfileUpdateStoreInfoRequest profileUpdateStoreInfoRequest){
+        checkService.checkValidUserForRequest(token, storeId, 0);
         profileService.updateStoreInfo(storeId, profileUpdateStoreInfoRequest);
         return "수정 완료";
     }

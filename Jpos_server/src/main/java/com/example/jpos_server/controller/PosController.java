@@ -1,5 +1,6 @@
 package com.example.jpos_server.controller;
 
+import com.example.jpos_server.service.CheckService;
 import com.example.jpos_server.service.PosService;
 import com.example.jpos_server.service.SSEService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,10 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -23,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class PosController {
     private final SSEService sseService;
     private final PosService posService;
+    private final CheckService checkService;
 
     /**
      * pos 화면을 구성할 정보 반환
@@ -32,7 +31,8 @@ public class PosController {
      * @throws JsonProcessingException - writeValueAsString 사용 위한 throws
      */
     @GetMapping("/{storeId}")
-    public String loadSeatsAndOrderAndMenus(@PathVariable Long storeId) throws JsonProcessingException {
+    public String loadSeatsAndOrderAndMenus(@RequestHeader("Authorization") String token, @PathVariable Long storeId) throws JsonProcessingException {
+        checkService.checkValidUserForRequest(token, storeId, 0);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(posService.makePosResponse(storeId));

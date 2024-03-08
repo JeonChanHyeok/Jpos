@@ -1,14 +1,12 @@
 package com.example.jpos_server.controller;
 
+import com.example.jpos_server.service.CheckService;
 import com.example.jpos_server.service.DashboardService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * dashboard 컨트롤러
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DashboardController {
     private final DashboardService dashboardService;
+    private final CheckService checkService;
 
     /**
      * 대시보드 상단에 들어갈 정보 반환
@@ -28,7 +27,8 @@ public class DashboardController {
      * @throws JsonProcessingException - writeValueAsString 사용에 필요
      */
     @GetMapping("/{storeId}")
-    public String loadDashboardData(@PathVariable Long storeId) throws JsonProcessingException {
+    public String loadDashboardData(@RequestHeader("Authorization") String token, @PathVariable Long storeId) throws JsonProcessingException {
+        checkService.checkValidUserForRequest(token, storeId, 0);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(dashboardService.makeDashboardPriceDataResponse(storeId));
@@ -45,7 +45,8 @@ public class DashboardController {
      * @throws JsonProcessingException - writeValueAsString 사용에 필요
      */
     @GetMapping("/find/{storeId}/{startDate}/{endDate}")
-    public String findEndPosOrder(@PathVariable Long storeId, @PathVariable String startDate, @PathVariable String endDate) throws JsonProcessingException {
+    public String findEndPosOrder(@RequestHeader("Authorization") String token, @PathVariable Long storeId, @PathVariable String startDate, @PathVariable String endDate) throws JsonProcessingException {
+        checkService.checkValidUserForRequest(token, storeId, 0);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(dashboardService.makeDashboardEndPosOrderDateResponse(storeId, startDate, endDate));

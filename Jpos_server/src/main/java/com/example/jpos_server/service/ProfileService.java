@@ -2,6 +2,8 @@ package com.example.jpos_server.service;
 
 import com.example.jpos_server.config.error.ErrorCode;
 import com.example.jpos_server.config.error.exceptions.LoginIdDuplicateException;
+import com.example.jpos_server.config.error.exceptions.NotMatchingUserAndRequestException;
+import com.example.jpos_server.config.security.jwt.JwtUtils;
 import com.example.jpos_server.domain.Store;
 import com.example.jpos_server.domain.StoreInfo;
 import com.example.jpos_server.domain.User.Authority;
@@ -21,10 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @RequiredArgsConstructor
@@ -37,9 +36,17 @@ public class ProfileService {
     private final AuthorityRepository authorityRepository;
     private final StoreRepository storeRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
     @Transactional(readOnly = true)
-    public ProfileResponse makeProfileResponse(String loginId) {
+    public ProfileResponse makeProfileResponse(String token, String loginId) {
+        String jwt = token.substring(7);
+
+        String tokenLoginId = jwtUtils.getUserNameFromJwtToken(jwt);
+
+        if(!loginId.equals(tokenLoginId)){
+            throw new NotMatchingUserAndRequestException("아이디와 요청 매칭 안됨.", ErrorCode.NOT_MATCH_USER_AND_REQUEST);
+        }
 
         ProfileResponse profileResponse = new ProfileResponse();
         Store store = userAccountRepository.findByLoginId(loginId).get().getStore();
@@ -85,7 +92,13 @@ public class ProfileService {
     }
 
     @Transactional
-    public void deleteEmployee(String userId) {
+    public void deleteEmployee(String token, String userId) {
+        String jwt = token.substring(7);
+        String loginId = jwtUtils.getUserNameFromJwtToken(jwt);
+        Long storeId = userAccountRepository.findByLoginId(userId).get().getStore().getId();
+        if(!Objects.equals(userAccountRepository.findByLoginId(loginId).get().getStore().getId(), storeId)){
+            throw new NotMatchingUserAndRequestException("아이디와 요청 매칭 안됨.", ErrorCode.NOT_MATCH_USER_AND_REQUEST);
+        }
         userAccountRepository.deleteByLoginId(userId);
     }
 

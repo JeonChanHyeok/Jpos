@@ -21,17 +21,11 @@ public class QrOrderService {
     private final MenuRepository menuRepository;
     private final CategoryRepository categoryRepository;
     private final PosOrderRepository posOrderRepository;
+    private final IdempotencyService idempotencyService;
 
 
 
-    @Transactional(readOnly = true)
-    public boolean correctSeat(Long storeId, Long seatId){
-        if (seatRepository.existsById(seatId)){
-            return seatRepository.findById(seatId).get().getStore().getId().equals(storeId);
-        }else{
-            throw new SeatNotExistInStoreException("잘못된 주소", ErrorCode.SEAT_NOT_EXIST_IN_STORE);
-        }
-    }
+
 
     public QrOrderResponse makeResponse(Long storeId, Long seatId){
         QrOrderResponse qrOrderResponse = new QrOrderResponse();
@@ -46,7 +40,8 @@ public class QrOrderService {
         return qrOrderResponse;
     }
 
-    public void addPosOrder(PosOrderRequest posOrderDto) {
+    public void addPosOrder(String idempotencyKey, PosOrderRequest posOrderDto) {
+        idempotencyService.checkDuplicatedRequest(idempotencyKey);
         PosOrder posOrder = new PosOrder();
         posOrder.setPosOrderContent(posOrderDto.getPosOrderContent());
         posOrder.setStore(storeRepository.findById(posOrderDto.getStoreId()).get());

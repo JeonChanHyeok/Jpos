@@ -17,20 +17,20 @@ public class SeatSettingService {
     private final SeatRepository seatRepository;
     private final StoreRepository storeRepository;
 
-    public List<SeatDto.SeatDtoOfIdAndSeatName> makeResponse(Long storeId){
+
+    public List<SeatDto.SeatDtoOfIdAndSeatName> makeResponse(Long storeId) {
         return seatRepository.findIdAndSeatNameByStoreId(storeId);
     }
 
-    public void addSeat(Long storeId, String seatName){
+    public void addSeat(Long storeId, String seatName) {
         Seat seat = new Seat();
         seat.setStore(storeRepository.findById(storeId).get());
         seat.setSeatName(seatName);
         seatRepository.save(seat);
     }
 
-    public void deleteSeat(Long seatId){
+    public void deleteSeat(Long seatId) {
         seatRepository.deleteById(seatId);
     }
-
 
 }
